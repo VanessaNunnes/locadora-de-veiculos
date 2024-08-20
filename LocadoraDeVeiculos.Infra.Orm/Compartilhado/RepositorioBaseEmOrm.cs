@@ -5,9 +5,9 @@ using LocadoraDeVeiculos.Dominio.Compartilhado;
 namespace LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 public abstract class RepositorioBaseEmOrm<TEntidade> where TEntidade : EntidadeBase
 {
-    protected readonly LocadoraDeVeiculosDbContext _dbContext;
+    protected readonly LocadoraDbContext _dbContext;
 
-    protected RepositorioBaseEmOrm(LocadoraDeVeiculosDbContext dbContext)
+    protected RepositorioBaseEmOrm(LocadoraDbContext dbContext)
     {
         this._dbContext = dbContext;
     }
