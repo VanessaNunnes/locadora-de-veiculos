@@ -1,0 +1,24 @@
+﻿@{
+	ViewBag.Title = "Página Inicial";
+
+}
+
+<div class="col">
+
+	<section class="row my-3 my-xl-5">
+     
+		<div class="col d-grid gap-1">
+			<h2 class="display-2 fw-bold text-primary">Bem-vindo(a)!</h2>
+
+          
+
+			@if (User.Identity is null || (User.Identity is not null && !User.Identity.IsAuthenticated))
+			{
+				<div class="d-grid d-lg-flex gap-3 align-items-center">
+					<a asp-controller="Usuario" asp-action="Login" class="col btn btn-outline-primary">Login</a>
+					<a asp-controller="Usuario" asp-action="Registrar" class="col btn btn-primary">Registro</a>
+				</div>
+			}
+		</div>
+	</section>
+</div>

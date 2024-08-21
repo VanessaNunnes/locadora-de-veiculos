@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace LocadoraDeVeiculos.WebApp.Extensions;
 
-    public class TempDataDictionaryExtensions
+    public static class TempDataDictionaryExtensions
     {
         public static void SerializarMensagemViewModel(
             this ITempDataDictionary dicionario, MensagemViewModel mensagemVm)
