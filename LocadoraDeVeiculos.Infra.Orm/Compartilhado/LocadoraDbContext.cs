@@ -1,5 +1,7 @@
-﻿using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
+﻿using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
+using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloUsuario;
+using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ namespace LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 public class LocadoraDbContext : IdentityDbContext<Usuario, Perfil, int>
 {
     public DbSet<GrupoAutomoveis> GrupoAutomoveis { get; set; }
+    public DbSet<Automovel> Automoveis { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -31,6 +34,7 @@ public class LocadoraDbContext : IdentityDbContext<Usuario, Perfil, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new MapeadorGrupoAutomoveisEmOrm());
+        modelBuilder.ApplyConfiguration(new MapeadorAutomovelEmOrm());
 
         base.OnModelCreating(modelBuilder);
     }

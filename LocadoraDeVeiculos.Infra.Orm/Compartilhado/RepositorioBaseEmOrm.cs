@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LocadoraDeVeiculos.Dominio.Compartilhado;
 
-
 namespace LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 public abstract class RepositorioBaseEmOrm<TEntidade> where TEntidade : EntidadeBase
 {

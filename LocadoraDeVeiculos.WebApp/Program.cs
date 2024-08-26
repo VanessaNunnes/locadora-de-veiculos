@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using LocadoraDeVeiculos.Aplicacao.Servicos;
+using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Infra.Orm.Compartilhado;
+using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 
 namespace LocadoraDeVeiculos.WebApp
@@ -16,7 +18,7 @@ namespace LocadoraDeVeiculos.WebApp
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
-
+            
             #region Inje��o de Depend�ncia de Servi�os
 
             builder.Services.AddDbContext<LocadoraDbContext>();
@@ -24,9 +26,13 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddScoped<IRepositorioGrupoAutomoveis, RepositorioGrupoAutomoveisEmOrm>();
 
             builder.Services.AddScoped<GrupoAutomoveisService>();
-  
 
-            builder.Services.AddIdentity<Usuario, Perfil>()
+            builder.Services.AddScoped<IRepositorioAutomovel, RepositorioAutomovelEmOrm>();
+
+            builder.Services.AddScoped<AutomovelService>();
+
+
+			builder.Services.AddIdentity<Usuario, Perfil>()
                 .AddEntityFrameworkStores<LocadoraDbContext>()
                 .AddDefaultTokenProviders();
 

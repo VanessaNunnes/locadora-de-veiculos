@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using Microsoft.EntityFrameworkCore;
 
-namespace LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis
-{
+namespace LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
+
     public class RepositorioGrupoAutomoveisEmOrm : RepositorioBaseEmOrm<GrupoAutomoveis>, IRepositorioGrupoAutomoveis
     {
         public RepositorioGrupoAutomoveisEmOrm(
@@ -26,4 +26,4 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis
                 .ToList();
         }
     }
-}
+

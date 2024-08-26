@@ -2,6 +2,7 @@
 	string caminho = Context.Request.Path;
 
 	var grupoAutomoveisAtivo = caminho.StartsWith("/grupoAutomoveis") ? "nav-link active fw-semibold" : "nav-link";
+	var AutomovelAtivo = caminho.StartsWith("/Automovel") ? "nav-link active fw-semibold" : "nav-link";
 
 	MensagemViewModel? mensagem = ViewBag.Mensagem ?? null;
 }﻿
@@ -27,7 +28,8 @@
                 <div class="navbar-nav d-lg-flex justify-content-end gap-3 w-100">
                     @if (User.IsInRole("Empresa"))
                     {
-                        <a class="px-4 @grupoAutomoveisAtivo" href="/grupoAutomoveis/listar">Grupo de Automóveis</a>
+	                    <a class="px-4 @grupoAutomoveisAtivo" href="/grupoAutomoveis/listar">Grupo de Automóveis</a>
+	                    <a class="px-4 @AutomovelAtivo" href="/Automovel/listar">Automóveis</a>
                     }
                 </div>
 
