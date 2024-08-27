@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentResults;
 using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloUsuario;
@@ -74,43 +75,43 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
         public IActionResult Editar(int id)
         {
-            var resultado = servico.SelecionarPorId(id);
+        var resultado = servico.SelecionarPorId(id);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+        if (resultado.IsFailed)
+        {
+            ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
-
-            var automovel = resultado.Value;
-
-            var editarAutomovelVm = mapeador.Map<EditarAutomovelViewModel>(automovel);
-
-            return View(editarAutomovelVm);
+            return RedirectToAction(nameof(Listar));
         }
+
+        var automoveis = resultado.Value;
+
+        var editarAutomovelVm = mapeador.Map<EditarAutomovelViewModel>(automoveis);
+
+        return View(editarAutomovelVm);
+    }
 
         [HttpPost]
         public IActionResult Editar(EditarAutomovelViewModel editarVm)
         {
-            if (!ModelState.IsValid)
-                return View(CarregarDadosFormulario(editarVm));
+        if (!ModelState.IsValid)
+            return View(CarregarDadosFormulario(editarVm));
 
-            var automovel = mapeador.Map<Automovel>(editarVm);
+        var automovel = mapeador.Map<Automovel>(editarVm);
 
-            var resultado = servico.Editar(automovel);
+        var resultado = servico.Editar(automovel);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
-
-                return RedirectToAction(nameof(Listar));
-            }
-
-            ApresentarMensagemSucesso($"O registro ID [{automovel.Id}] foi editado com sucesso!");
+        if (resultado.IsFailed)
+        {
+            ApresentarMensagemFalha(resultado.ToResult());
 
             return RedirectToAction(nameof(Listar));
         }
+
+        ApresentarMensagemSucesso($"O registro ID [{automovel.Id}] foi editado com sucesso!");
+
+        return RedirectToAction(nameof(Listar));
+    }
 
         public IActionResult Excluir(int id)
         {

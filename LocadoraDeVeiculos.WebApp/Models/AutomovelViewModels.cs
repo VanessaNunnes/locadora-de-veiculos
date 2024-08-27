@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace LocadoraDeVeiculos.WebApp.Models;
+
         public class FormularioAutomovelViewModel
         {
 	        [Required(ErrorMessage = "A placa é obrigatório")]

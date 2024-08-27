@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
+using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
 using LocadoraDeVeiculos.WebApp.Models;
 
 namespace LocadoraDeVeiculos.WebApp.Mapping;
@@ -23,7 +24,8 @@ namespace LocadoraDeVeiculos.WebApp.Mapping;
                 opt => opt.MapFrom(src => src.GrupoAutomoveis != null ? src.GrupoAutomoveis.Nome : string.Empty)
             );
 
-        CreateMap<Automovel, EditarAutomovelViewModel>();
+        CreateMap<Automovel, EditarAutomovelViewModel>()
+            .ForMember(v => v.GrupoAutomoveis, opt => opt.MapFrom<GrupoAutomoveisValueResolver>());
     }
     }
 

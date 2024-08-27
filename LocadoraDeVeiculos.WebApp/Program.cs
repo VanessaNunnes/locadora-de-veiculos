@@ -5,9 +5,12 @@ using System.Reflection;
 using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
+using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
+using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
+using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
 
 namespace LocadoraDeVeiculos.WebApp
 {
@@ -24,15 +27,18 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddDbContext<LocadoraDbContext>();
 
             builder.Services.AddScoped<IRepositorioGrupoAutomoveis, RepositorioGrupoAutomoveisEmOrm>();
-
             builder.Services.AddScoped<GrupoAutomoveisService>();
 
             builder.Services.AddScoped<IRepositorioAutomovel, RepositorioAutomovelEmOrm>();
-
             builder.Services.AddScoped<AutomovelService>();
 
+            builder.Services.AddScoped<IRepositorioPlanoCobranca, RepositorioPlanoCobrancaEmOrm>();
+            builder.Services.AddScoped<PlanoCobrancaService>();
 
-			builder.Services.AddIdentity<Usuario, Perfil>()
+            builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
+
+
+            builder.Services.AddIdentity<Usuario, Perfil>()
                 .AddEntityFrameworkStores<LocadoraDbContext>()
                 .AddDefaultTokenProviders();
 
