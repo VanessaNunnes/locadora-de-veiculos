@@ -14,5 +14,15 @@ namespace LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
         {
             Nome = nome;
         }
-    }
+
+        public override List<string> Validar()
+        {
+	        List<string> erros = [];
+
+	        if (Nome.Length < 3)
+		        erros.Add("O nome é obrigatório");
+
+	        return erros;
+        }
+}
 

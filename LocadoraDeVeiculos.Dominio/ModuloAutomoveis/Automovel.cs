@@ -27,5 +27,15 @@ namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
             Ano = ano;
             GrupoAutomoveisId = grupoAutomoveisId;
         }
-    }
+
+        public override List<string> Validar()
+        {
+	        List<string> erros = [];
+
+	        if (GrupoAutomoveisId == 0)
+		        erros.Add("O grupo de veículos é obrigatório");
+
+	        return erros;
+        }
+}
 

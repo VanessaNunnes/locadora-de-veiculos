@@ -4,6 +4,7 @@
 	var grupoAutomoveisAtivo = caminho.StartsWith("/grupoAutomoveis") ? "nav-link active fw-semibold" : "nav-link";
 	var AutomovelAtivo = caminho.StartsWith("/Automovel") ? "nav-link active fw-semibold" : "nav-link";
 	var PlanoCobrancaAtivo = caminho.StartsWith("/PlanoCobranca") ? "nav-link active fw-semibold" : "nav-link";
+	var TaxaAtivo = caminho.StartsWith("/Taxa") ? "nav-link active fw-semibold" : "nav-link";
 
 	MensagemViewModel? mensagem = ViewBag.Mensagem ?? null;
 }﻿
@@ -32,6 +33,7 @@
 	                    <a class="px-4 @grupoAutomoveisAtivo" href="/grupoAutomoveis/listar">Grupo de Automóveis</a>
 	                    <a class="px-4 @AutomovelAtivo" href="/Automovel/listar">Automóveis</a>
 	                    <a class="px-4 @PlanoCobrancaAtivo" href="/PlanoCobranca/listar">Plano Cobrança</a>
+	                    <a class="px-4 @TaxaAtivo" href="/Taxa/listar">Taxa</a>
                     }
                 </div>
 

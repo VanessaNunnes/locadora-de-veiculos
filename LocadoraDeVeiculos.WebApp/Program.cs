@@ -2,14 +2,17 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
+using LocadoraDeVeiculos.Aplicacao.ModuloTaxa;
 using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
+using LocadoraDeVeiculos.Dominio.ModuloTaxa;
 using LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
+using LocadoraDeVeiculos.Infra.Orm.ModuloTaxa;
 using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
 
 namespace LocadoraDeVeiculos.WebApp
@@ -35,7 +38,10 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddScoped<IRepositorioPlanoCobranca, RepositorioPlanoCobrancaEmOrm>();
             builder.Services.AddScoped<PlanoCobrancaService>();
 
-            builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
+            builder.Services.AddScoped<IRepositorioTaxa, RepositorioTaxaEmOrm>();
+            builder.Services.AddScoped<ServicoTaxa>();
+
+			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 
 
             builder.Services.AddIdentity<Usuario, Perfil>()
