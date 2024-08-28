@@ -3,11 +3,11 @@ using LocadoraDeVeiculos.Dominio.ModuloTaxa;
 
 namespace LocadoraDeVeiculos.Aplicacao.ModuloTaxa;
 
-public class ServicoTaxa
+public class TaxaService
 {
     private readonly IRepositorioTaxa repositorioTaxa;
 
-    public ServicoTaxa(IRepositorioTaxa repositorioTaxa)
+    public TaxaService(IRepositorioTaxa repositorioTaxa)
     {
         this.repositorioTaxa = repositorioTaxa;
     }

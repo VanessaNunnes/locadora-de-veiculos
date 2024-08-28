@@ -8,10 +8,10 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
 public class TaxaController : WebControllerBase
 {
-    private readonly ServicoTaxa servico;
+    private readonly TaxaService servico;
     private readonly IMapper mapeador;
 
-    public TaxaController(ServicoTaxa servico, IMapper mapeador)
+    public TaxaController(TaxaService servico, IMapper mapeador)
     {
         this.servico = servico;
         this.mapeador = mapeador;

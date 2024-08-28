@@ -39,7 +39,7 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddScoped<PlanoCobrancaService>();
 
             builder.Services.AddScoped<IRepositorioTaxa, RepositorioTaxaEmOrm>();
-            builder.Services.AddScoped<ServicoTaxa>();
+            builder.Services.AddScoped<TaxaService>();
 
 			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 
