@@ -5,11 +5,13 @@ using System.Reflection;
 using LocadoraDeVeiculos.Aplicacao.ModuloTaxa;
 using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
+using LocadoraDeVeiculos.Dominio.ModuloCliente;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Dominio.ModuloTaxa;
 using LocadoraDeVeiculos.Infra.Orm.Compartilhado;
 using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
+using LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Infra.Orm.ModuloTaxa;
@@ -40,6 +42,9 @@ namespace LocadoraDeVeiculos.WebApp
 
             builder.Services.AddScoped<IRepositorioTaxa, RepositorioTaxaEmOrm>();
             builder.Services.AddScoped<TaxaService>();
+
+			builder.Services.AddScoped<IRepositorioCliente, RepositorioClienteEmOrm>();
+			builder.Services.AddScoped<ClienteService>();
 
 			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 
