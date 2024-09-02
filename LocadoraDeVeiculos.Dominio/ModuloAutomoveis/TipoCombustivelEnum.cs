@@ -9,8 +9,8 @@ namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis
     public enum TipoCombustivelEnum
     {
       Gasolina,
-      Gás, 
+      Gas, 
       Diesel,
-      Álcool
+      Alcool
     }
 }

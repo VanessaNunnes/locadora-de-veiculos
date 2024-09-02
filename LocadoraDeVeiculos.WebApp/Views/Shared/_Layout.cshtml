@@ -7,6 +7,7 @@
 	var TaxaAtivo = caminho.StartsWith("/Taxa") ? "nav-link active fw-semibold" : "nav-link";
 	var ClienteAtivo = caminho.StartsWith("/Cliente") ? "nav-link active fw-semibold" : "nav-link";
 	var CondutorAtivo = caminho.StartsWith("/Condutor") ? "nav-link active fw-semibold" : "nav-link";
+	var CombustivelAtivo = caminho.StartsWith("/Combustivel") ? "nav-link active fw-semibold" : "nav-link";
 
 	MensagemViewModel? mensagem = ViewBag.Mensagem ?? null;
 }﻿
@@ -38,6 +39,7 @@
 	                    <a class="px-4 @TaxaAtivo" href="/Taxa/listar">Taxa</a>
 	                    <a class="px-4 @ClienteAtivo" href="/Cliente/listar">Cliente</a>
 	                    <a class="px-4 @CondutorAtivo" href="/Condutor/listar">Condutor</a>
+	                    <a class="px-4 @CombustivelAtivo" href="/Combustivel/configurar">Combustivel</a>
                     }
                 </div>
 
