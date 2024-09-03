@@ -9,6 +9,7 @@ using LocadoraDeVeiculos.Dominio.ModuloCliente;
 using LocadoraDeVeiculos.Dominio.ModuloCombustivel;
 using LocadoraDeVeiculos.Dominio.ModuloCondutor;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
+using LocadoraDeVeiculos.Dominio.ModuloLocacao;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Dominio.ModuloTaxa;
 using LocadoraDeVeiculos.Infra.Orm.Compartilhado;
@@ -17,6 +18,7 @@ using LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCombustivel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCondutor;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
+using LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
 using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Infra.Orm.ModuloTaxa;
 using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
@@ -56,9 +58,19 @@ namespace LocadoraDeVeiculos.WebApp
 			builder.Services.AddScoped<IRepositorioConfiguracaoCombustivel, RepositorioConfiguracaoCombustivelEmOrm>();
             builder.Services.AddScoped<ConfiguracaoCombustivelService>();
 
+            builder.Services.AddScoped<IRepositorioLocacao, RepositorioLocacaoEmOrm>();
+            builder.Services.AddScoped<LocacaoService>();
+
 			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 
-            builder.Services.AddIdentity<Usuario, Perfil>()
+			builder.Services.AddScoped<TaxasSelecionadasValueResolver>();
+			builder.Services.AddScoped<TaxasValueResolver>();
+			builder.Services.AddScoped<CondutoresValueResolver>();
+			builder.Services.AddScoped<AutomoveisValueResolver>();
+			builder.Services.AddScoped<ValorParcialValueResolver>();
+			builder.Services.AddScoped<ValorTotalValueResolver>();
+
+			builder.Services.AddIdentity<Usuario, Perfil>()
                 .AddEntityFrameworkStores<LocadoraDbContext>()
                 .AddDefaultTokenProviders();
 

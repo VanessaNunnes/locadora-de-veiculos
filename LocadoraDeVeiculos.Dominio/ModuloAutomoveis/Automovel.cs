@@ -1,5 +1,6 @@
 ﻿using LocadoraDeVeiculos.Dominio.Compartilhado;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
+using LocadoraDeVeiculos.Dominio.ModuloLocacao;
 
 namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 
@@ -14,8 +15,9 @@ namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
         public int Ano { get; set; }
         public GrupoAutomoveis? GrupoAutomoveis { get; set; }
         public int GrupoAutomoveisId { get; set; }
+        public bool Alugado { get; set; }
 
-        protected Automovel() { }
+		protected Automovel() { }
 
         public Automovel(string placa, string marca, string cor, TipoCombustivelEnum tipoCombustivel, int capacidadeMax, int ano, int grupoAutomoveisId) 
         {
@@ -36,6 +38,33 @@ namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 		        erros.Add("O grupo de veículos é obrigatório");
 
 	        return erros;
+        }
+
+        public void Alugar()
+        {
+	        Alugado = true;
+        }
+
+        public void Desocupar()
+        {
+	        Alugado = false;
+        }
+
+        public decimal CalcularLitrosParaAbastecimento(MarcadorCombustivelEnum marcadorCombustivel)
+        {
+	        switch (marcadorCombustivel)
+	        {
+		        case MarcadorCombustivelEnum.Vazio: return CapacidadeMax;
+
+		        case MarcadorCombustivelEnum.UmQuarto: return (CapacidadeMax - (CapacidadeMax * 1 / 4));
+
+		        case MarcadorCombustivelEnum.MeioTanque: return (CapacidadeMax - (CapacidadeMax * 1 / 2));
+
+		        case MarcadorCombustivelEnum.TresQuartos: return (CapacidadeMax - (CapacidadeMax * 3 / 4));
+
+		        default:
+			        return 0;
+	        }
         }
 }
 

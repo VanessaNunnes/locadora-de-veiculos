@@ -27,7 +27,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
         public IActionResult Listar()
         {
-            var resultado = servico.SelecionarTodos(UsuarioId.GetValueOrDefault());
+            var resultado = servico.SelecionarTodos();
 
             if (resultado.IsFailed)
             {

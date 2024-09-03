@@ -22,4 +22,11 @@ public class RepositorioTaxaEmOrm : RepositorioBaseEmOrm<Taxa>, IRepositorioTaxa
 			.Where(predicate)
 			.ToList();
 	}
+
+	public List<Taxa> SelecionarMuitos(List<int> idsTaxasSelecionadas)
+	{
+		return _dbContext.Taxas
+			.Where(taxa => idsTaxasSelecionadas.Contains(taxa.Id))
+			.ToList();
+	}
 }

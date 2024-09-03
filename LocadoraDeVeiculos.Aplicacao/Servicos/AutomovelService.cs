@@ -61,12 +61,11 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos
             return Result.Ok(automovel);
         }
 
-        public Result<List<Automovel>> SelecionarTodos(int usuarioId)
+        public Result<List<Automovel>> SelecionarTodos()
         {
-			var automoveis = repositorioAutomovel
-				.Filtrar(f => f.UsuarioId == usuarioId);
+	        var automoveis = repositorioAutomovel.SelecionarTodos();
 
-			return Result.Ok(automoveis);
-		}
-    }
+	        return Result.Ok(automoveis);
+        }
+	}
 }
