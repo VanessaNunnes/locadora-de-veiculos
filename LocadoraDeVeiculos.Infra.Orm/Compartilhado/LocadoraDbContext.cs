@@ -2,6 +2,7 @@
 using LocadoraDeVeiculos.Dominio.ModuloCliente;
 using LocadoraDeVeiculos.Dominio.ModuloCombustivel;
 using LocadoraDeVeiculos.Dominio.ModuloCondutor;
+using LocadoraDeVeiculos.Dominio.ModuloFuncionario;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloLocacao;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
@@ -11,6 +12,7 @@ using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCombustivel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCondutor;
+using LocadoraDeVeiculos.Infra.Orm.ModuloFuncionario;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
 using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
@@ -31,35 +33,28 @@ public class LocadoraDbContext : IdentityDbContext<Usuario, Perfil, int>
     public DbSet<Condutor> Condutores { get; set; }
     public DbSet<ConfiguracaoCombustivel> ConfiguracoesCombustiveis { get; set; }
     public DbSet<Locacao> Locacoes { get; set; }
+    public DbSet<Funcionario> Funcionarios { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+		var config = new ConfigurationBuilder()
+			.SetBasePath(Directory.GetCurrentDirectory())
+			.AddJsonFile("appsettings.json")
+			.Build();
 
-        var connectionString = config
-            .GetConnectionString("SqlServer");
+		var connectionString = config.GetConnectionString("SqlServer");
 
-        optionsBuilder.UseSqlServer(connectionString);
+		optionsBuilder.UseSqlServer(connectionString);
 
-        optionsBuilder.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
-
-        base.OnConfiguring(optionsBuilder);
-    }
+		base.OnConfiguring(optionsBuilder);
+	}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new MapeadorGrupoAutomoveisEmOrm());
-        modelBuilder.ApplyConfiguration(new MapeadorAutomovelEmOrm());
-        modelBuilder.ApplyConfiguration(new MapeadorPlanoCobrancaEmOrm());
-        modelBuilder.ApplyConfiguration(new MapeadorTaxa());
-        modelBuilder.ApplyConfiguration(new MapeadorCliente());
-        modelBuilder.ApplyConfiguration(new MapeadorCondutor());
-        modelBuilder.ApplyConfiguration(new MapeadorConfiguraoCombustivel());
-        modelBuilder.ApplyConfiguration(new MapeadorLocacao());
+		var assembly = typeof(LocadoraDbContext).Assembly;
+
+		modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 
 		base.OnModelCreating(modelBuilder);
-    }
+	}
 }

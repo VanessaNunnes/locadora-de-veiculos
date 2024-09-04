@@ -8,6 +8,7 @@ using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloCliente;
 using LocadoraDeVeiculos.Dominio.ModuloCombustivel;
 using LocadoraDeVeiculos.Dominio.ModuloCondutor;
+using LocadoraDeVeiculos.Dominio.ModuloFuncionario;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloLocacao;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
@@ -17,11 +18,13 @@ using LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCombustivel;
 using LocadoraDeVeiculos.Infra.Orm.ModuloCondutor;
+using LocadoraDeVeiculos.Infra.Orm.ModuloFuncionario;
 using LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
 using LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.Infra.Orm.ModuloTaxa;
 using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
+using LocadoraDeVeiculos.WebApp.Mapping;
 
 namespace LocadoraDeVeiculos.WebApp
 {
@@ -61,14 +64,17 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddScoped<IRepositorioLocacao, RepositorioLocacaoEmOrm>();
             builder.Services.AddScoped<LocacaoService>();
 
-			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
+            builder.Services.AddScoped<IRepositorioFuncionario, RepositorioFuncionarioEmOrm>();
+            builder.Services.AddScoped<FuncionarioService>();
 
+			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 			builder.Services.AddScoped<TaxasSelecionadasValueResolver>();
 			builder.Services.AddScoped<TaxasValueResolver>();
 			builder.Services.AddScoped<CondutoresValueResolver>();
 			builder.Services.AddScoped<AutomoveisValueResolver>();
 			builder.Services.AddScoped<ValorParcialValueResolver>();
 			builder.Services.AddScoped<ValorTotalValueResolver>();
+			builder.Services.AddScoped<EmpresaIdValueResolver>();
 
 			builder.Services.AddScoped<AutenticacaoService>();
 
