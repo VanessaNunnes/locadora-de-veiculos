@@ -16,12 +16,12 @@ public class RepositorioTaxaEmOrm : RepositorioBaseEmOrm<Taxa>, IRepositorioTaxa
 		return _dbContext.Taxas;
 	}
 
-	public List<Taxa> Filtrar(Func<Taxa, bool> predicate)
-	{
-		return _dbContext.Taxas
-			.Where(predicate)
-			.ToList();
-	}
+	//public List<Taxa> Filtrar(Func<Taxa, bool> predicate)
+	//{
+	//	return _dbContext.Taxas
+	//		.Where(predicate)
+	//		.ToList();
+	//}
 
 	public List<Taxa> SelecionarMuitos(List<int> idsTaxasSelecionadas)
 	{

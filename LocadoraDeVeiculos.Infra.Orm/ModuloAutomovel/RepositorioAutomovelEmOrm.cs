@@ -29,10 +29,10 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
                 .ToList();
         }
 
-        public List<Automovel> Filtrar(Func<Automovel, bool> predicate)
-        {
-	        return _dbContext.Automoveis
-		        .Where(predicate)
-		        .ToList();
-        }
+        //public List<Automovel> Filtrar(Func<Automovel, bool> predicate)
+        //{
+	       // return _dbContext.Automoveis
+		      //  .Where(predicate)
+		      //  .ToList();
+        //}
 }

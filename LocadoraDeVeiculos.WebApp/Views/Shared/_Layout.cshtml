@@ -1,89 +1,104 @@
 ﻿@{
-	string caminho = Context.Request.Path;
+    MensagemViewModel? mensagem = ViewBag.Mensagem ?? null;
+}
 
-	var grupoAutomoveisAtivo = caminho.StartsWith("/grupoAutomoveis") ? "nav-link active fw-semibold" : "nav-link";
-	var AutomovelAtivo = caminho.StartsWith("/Automovel") ? "nav-link active fw-semibold" : "nav-link";
-	var PlanoCobrancaAtivo = caminho.StartsWith("/PlanoCobranca") ? "nav-link active fw-semibold" : "nav-link";
-	var TaxaAtivo = caminho.StartsWith("/Taxa") ? "nav-link active fw-semibold" : "nav-link";
-	var ClienteAtivo = caminho.StartsWith("/Cliente") ? "nav-link active fw-semibold" : "nav-link";
-	var CondutorAtivo = caminho.StartsWith("/Condutor") ? "nav-link active fw-semibold" : "nav-link";
-	var CombustivelAtivo = caminho.StartsWith("/Combustivel") ? "nav-link active fw-semibold" : "nav-link";
-	var LocacaoAtivo = caminho.StartsWith("/Locacao") ? "nav-link active fw-semibold" : "nav-link";
-
-	MensagemViewModel? mensagem = ViewBag.Mensagem ?? null;
-}﻿
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - Locadora De Veiculos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <title>@ViewBag.Title - Locadora De Veículos</title>
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LocadoraDeVeiculos.WebApp.styles.css" asp-append-version="true" />
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg">
-        <div class="container my-3">
-            <a class="navbar-brand fs-3 fw-semibold text-primary" href="/">Locadora de Veículos</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav d-lg-flex justify-content-end gap-3 w-100">
-                    @if (User.IsInRole("Empresa"))
-                    {
-	                    <a class="px-4 @grupoAutomoveisAtivo" href="/grupoAutomoveis/listar">Grupo de Automóveis</a>
-	                    <a class="px-4 @AutomovelAtivo" href="/Automovel/listar">Automóveis</a>
-	                    <a class="px-4 @PlanoCobrancaAtivo" href="/PlanoCobranca/listar">Plano Cobrança</a>
-	                    <a class="px-4 @TaxaAtivo" href="/Taxa/listar">Taxa</a>
-	                    <a class="px-4 @ClienteAtivo" href="/Cliente/listar">Cliente</a>
-	                    <a class="px-4 @CondutorAtivo" href="/Condutor/listar">Condutor</a>
-	                    <a class="px-4 @CombustivelAtivo" href="/Combustivel/configurar">Combustivel</a>
-	                    <a class="px-4 @LocacaoAtivo" href="/Locacao/listar">Locacao</a>
-                    }
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-semibold fs-4" asp-controller="Home" asp-action="Index">Locadora de Veículos</a>
+                    
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex">
+                    <ul class="navbar-nav flex-grow-1 align-items-center justify-content-end">
+                        @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="GrupoAutomoveis" asp-action="Listar">Grupos de Veículos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Automovel" asp-action="Listar">Veículos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="PlanoCobranca" asp-action="Listar">Planos de Cobrança</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Taxa" asp-action="Listar">Taxas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cliente" asp-action="Listar">Clientes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Condutor" asp-action="Listar">Condutores</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Locacao" asp-action="Listar">Locações</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Combustivel" asp-action="Configurar"><i class="bi bi-gear-fill"></i></a>
+                            </li>
+
+                            <form asp-controller="Autenticacao" asp-action="Logout" class="d-flex gap-1 ms-4">
+                                <a href="#" class="btn btn-outline-primary px-5">
+                                    <i class="bi bi-person-vcard-fill"></i>
+                                    @User.Identity.Name
+                                </a>
+
+                                <button class="btn btn-primary px-3">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Logout
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="col-md-3 text-end">
+                                <a asp-controller="Autenticacao" asp-action="Login" class="btn btn-outline-primary me-2 px-4">Login</a>
+                                <a asp-controller="Autenticacao" asp-action="Registrar" class="btn btn-outline-primary px-4">Registro</a>
+                            </div>
+                        }
+                    </ul>
                 </div>
 
-                @if (User.Identity is not null && User.Identity.IsAuthenticated)
-                {
-                    <form asp-controller="Usuario" asp-action="Logout" class="d-grid d-lg-flex justify-content-lg-end gap-1 w-100">
-                        <a href="#" class="btn btn-outline-primary px-5">
-                            <i class="bi bi-person-vcard-fill"></i>
-                            @User.Identity.Name
-                        </a>
-
-                        <button class="btn btn-primary px-3">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Logout
-                        </button>
-                    </form>
-                }
-                else
-                {
-                    <div class="col-md-3 text-end">
-                        <a asp-controller="Usuario" asp-action="Login" class="btn btn-outline-primary me-2 px-4">Login</a>
-                        <a asp-controller="Usuario" asp-action="Registrar" class="btn btn-outline-primary px-4">Registro</a>
-                    </div>
-
-                }
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main class="container mt-4">
-        <div class="row px-2">
-            <h1 class="text-light-emphasis">@ViewBag.Title</h1>
-            <hr />
+    <div class="container">
+        <main role="main" class="pb-3">
+            <h1 class="fw-semibold mt-4">@ViewBag.Title</h1>
+            <hr>
             <partial name="_Mensagem" model="mensagem"></partial>
+
             @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Locadora de Veículos
         </div>
-    </main>
-
-    <footer class="border-top text-center mt-auto">
-        <p class="my-3">&copy; - 2024 - Locadora de Veículos 1.0</p>
     </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <script src="~/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

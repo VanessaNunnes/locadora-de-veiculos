@@ -14,10 +14,10 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 			return _dbContext.Clientes;
 		}
 
-		public List<Cliente> Filtrar(Func<Cliente, bool> predicate)
-		{
-			return _dbContext.Clientes
-				.Where(predicate)
-				.ToList();
-		}
+		//public List<Cliente> Filtrar(Func<Cliente, bool> predicate)
+		//{
+		//	return _dbContext.Clientes
+		//		.Where(predicate)
+		//		.ToList();
+		//}
 }

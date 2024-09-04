@@ -54,11 +54,10 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
             return Result.Ok(grupoAutomoveis);
         }
 
-        public Result<List<GrupoAutomoveis>> SelecionarTodos(int usuarioId)
-        {
-            var grupoAutomoveis = repositorioGrupoAutomoveis
-                .Filtrar(f => f.UsuarioId == usuarioId);
+	public Result<List<GrupoAutomoveis>> SelecionarTodos()
+	{
+		var grupos = repositorioGrupoAutomoveis.SelecionarTodos();
 
-            return Result.Ok(grupoAutomoveis);
-        }
-    }
+		return Result.Ok(grupos);
+	}
+}

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LocadoraDeVeiculos.Infra.Orm.ModuloCombustivel;
 	public class RepositorioConfiguracaoCombustivelEmOrm : IRepositorioConfiguracaoCombustivel
-{
+	{
 		private readonly LocadoraDbContext dbContext;
 
 		public RepositorioConfiguracaoCombustivelEmOrm(LocadoraDbContext dbContext)

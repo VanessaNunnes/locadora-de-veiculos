@@ -56,8 +56,6 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
             var automovel = mapeador.Map<Automovel>(inserirVm);
 
-            automovel.UsuarioId = UsuarioId.GetValueOrDefault();
-
 		var resultado = servico.Inserir(automovel);
 
 
@@ -169,7 +167,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
         private FormularioAutomovelViewModel? CarregarDadosFormulario(
             FormularioAutomovelViewModel? dadosPrevios = null)
     {
-            var resultadoGrupos = servicoGrupos.SelecionarTodos(UsuarioId.GetValueOrDefault());
+            var resultadoGrupos = servicoGrupos.SelecionarTodos();
 
             if (resultadoGrupos.IsFailed)
             {

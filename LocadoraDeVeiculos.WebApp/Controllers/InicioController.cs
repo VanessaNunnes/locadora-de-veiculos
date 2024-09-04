@@ -25,7 +25,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
         
         if (UsuarioId.HasValue)
         {
-            ViewBag.QuantidadeGrupoAutomoveis = servicoGrupoAutomoveis.SelecionarTodos(UsuarioId.Value).Value.Count;
+            ViewBag.QuantidadeGrupoAutomoveis = servicoGrupoAutomoveis.SelecionarTodos().Value.Count;
         }
 
         ViewBag.Mensagem = TempData.DesserializarMensagemViewModel();

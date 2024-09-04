@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
-	public class MapeadorLocacao : IEntityTypeConfiguration<Locacao>
+public class MapeadorLocacao : IEntityTypeConfiguration<Locacao>
 {
 	public void Configure(EntityTypeBuilder<Locacao> builder)
 	{
@@ -69,15 +69,6 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
 			.WithMany(t => t.Locacoes)
 			.UsingEntity(j => j.ToTable("TBLocacaoTaxa"));
 
-		builder.Property(s => s.UsuarioId)
-			.IsRequired()
-			.HasColumnType("int")
-			.HasColumnName("Usuario_Id");
-
-		builder.HasOne(g => g.Usuario)
-			.WithMany()
-			.HasForeignKey(s => s.UsuarioId)
-			.OnDelete(DeleteBehavior.NoAction);
 
 	}
 }

@@ -54,15 +54,5 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloCliente;
 				.HasColumnType("varchar(10)")
 				.IsRequired();
 
-			builder.Property(s => s.UsuarioId)
-				.IsRequired()
-				.HasColumnType("int")
-				.HasColumnName("Usuario_Id");
-
-			builder.HasOne(g => g.Usuario)
-				.WithMany()
-				.HasForeignKey(s => s.UsuarioId)
-				.OnDelete(DeleteBehavior.NoAction);
-
-	}
+		}
 	}

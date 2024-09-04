@@ -48,15 +48,6 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
                 .HasForeignKey(a => a.GrupoAutomoveisId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-			builder.Property(s => s.UsuarioId)
-				.IsRequired()
-				.HasColumnType("int")
-				.HasColumnName("Usuario_Id");
-
-			builder.HasOne(g => g.Usuario)
-				.WithMany()
-				.HasForeignKey(s => s.UsuarioId)
-				.OnDelete(DeleteBehavior.NoAction);
         }
 }
 

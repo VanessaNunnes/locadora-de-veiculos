@@ -47,7 +47,6 @@ public class ClienteController : WebControllerBase
             return View(inserirVm);
 
         var cliente = mapeador.Map<Cliente>(inserirVm);
-        cliente.UsuarioId = UsuarioId.GetValueOrDefault();
 
 		var resultado = servico.Inserir(cliente);
 

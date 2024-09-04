@@ -22,7 +22,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
         public IActionResult Listar()
         {
-            var resultado = servicoGrupoAutomoveis.SelecionarTodos(UsuarioId.GetValueOrDefault());
+            var resultado = servicoGrupoAutomoveis.SelecionarTodos();
 
             if (resultado.IsFailed)
             {
@@ -52,8 +52,6 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
                 return View(inserirGrupoAutomoveisVm);
 
             var grupoAutomoveis = mapeador.Map<GrupoAutomoveis>(inserirGrupoAutomoveisVm);
-
-            grupoAutomoveis.UsuarioId = UsuarioId.GetValueOrDefault();
 
             var resultado = servicoGrupoAutomoveis.Inserir(grupoAutomoveis);
 

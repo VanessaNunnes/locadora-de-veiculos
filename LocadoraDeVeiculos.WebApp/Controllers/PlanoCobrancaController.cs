@@ -54,8 +54,6 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
         var planoCobranca = mapeador.Map<PlanoCobranca>(inserirVm);
 
-        planoCobranca.UsuarioId = UsuarioId.GetValueOrDefault();
-
         var resultado = servico.Inserir(planoCobranca);
 
         if (resultado.IsFailed)
@@ -85,7 +83,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
         var editarVm = mapeador.Map<EditarPlanoCobrancaViewModel>(planoCobranca);
 
-        var grupos = servicoGrupos.SelecionarTodos(id).Value;
+        var grupos = servicoGrupos.SelecionarTodos().Value;
 
         editarVm.GrupoAutomoveis = grupos
             .Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
@@ -170,7 +168,7 @@ namespace LocadoraDeVeiculos.WebApp.Controllers;
 
     private FormularioPlanoCobrancaViewModel? CarregarDadosFormulario(FormularioPlanoCobrancaViewModel? dadosPrevios = null)
     {
-        var resultadoGrupos = servicoGrupos.SelecionarTodos(UsuarioId.GetValueOrDefault());
+        var resultadoGrupos = servicoGrupos.SelecionarTodos();
 
         if (resultadoGrupos.IsFailed)
         {

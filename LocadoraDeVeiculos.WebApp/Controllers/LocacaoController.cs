@@ -64,8 +64,6 @@ public class LocacaoController : WebControllerBase
 
 		var locacao = mapeador.Map<Locacao>(inserirVm);
 
-		locacao.UsuarioId = UsuarioId.GetValueOrDefault();
-
 		var confirmarVm = mapeador.Map<ConfirmarAberturaLocacaoViewModel>(locacao);
 
 		TempData["LocacaoParaInsercao"] = JsonSerializer.Serialize(confirmarVm);
@@ -89,8 +87,6 @@ public class LocacaoController : WebControllerBase
 	public IActionResult ConfirmarAbertura(ConfirmarAberturaLocacaoViewModel confirmarVm)
 	{
 		var locacao = mapeador.Map<Locacao>(confirmarVm);
-
-		locacao.UsuarioId = UsuarioId.GetValueOrDefault();
 
 		var resultado = servicoLocacao.Inserir(locacao);
 

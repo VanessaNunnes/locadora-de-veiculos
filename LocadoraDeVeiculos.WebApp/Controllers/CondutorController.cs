@@ -103,7 +103,6 @@ public class CondutorController : WebControllerBase
             return View(inserirVm);
 
         var condutor = mapeador.Map<Condutor>(inserirVm);
-        condutor.UsuarioId = UsuarioId.GetValueOrDefault();
 
 		var resultado = servico.Inserir(condutor);
 

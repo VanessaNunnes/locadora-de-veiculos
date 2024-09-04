@@ -70,6 +70,8 @@ namespace LocadoraDeVeiculos.WebApp
 			builder.Services.AddScoped<ValorParcialValueResolver>();
 			builder.Services.AddScoped<ValorTotalValueResolver>();
 
+			builder.Services.AddScoped<AutenticacaoService>();
+
 			builder.Services.AddIdentity<Usuario, Perfil>()
                 .AddEntityFrameworkStores<LocadoraDbContext>()
                 .AddDefaultTokenProviders();
@@ -94,8 +96,8 @@ namespace LocadoraDeVeiculos.WebApp
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Usuario/Login";
-                options.AccessDeniedPath = "/Usuario/AcessoNegado";
+                options.LoginPath = "/Autenticacao/Login";
+                options.AccessDeniedPath = "/Autenticacao/AcessoNegado";
             });
 
             builder.Services.AddAutoMapper(cfg =>

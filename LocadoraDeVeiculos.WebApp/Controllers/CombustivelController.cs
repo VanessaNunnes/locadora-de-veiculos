@@ -35,7 +35,6 @@ public class CombustivelController : WebControllerBase
     public IActionResult Configurar(FormularioConfiguracaoCombustivelViewModel formularioVm)
     {
         var config = mapeador.Map<ConfiguracaoCombustivel>(formularioVm);
-        config.UsuarioId = UsuarioId.GetValueOrDefault();
 
 		var resultado = servicoCombustivel.SalvarConfiguracao(config);
 

@@ -47,7 +47,6 @@ public class TaxaController : WebControllerBase
             return View(inserirVm);
 
         var taxa = mapeador.Map<Taxa>(inserirVm);
-        taxa.UsuarioId = UsuarioId.GetValueOrDefault();
 		var resultado = servico.Inserir(taxa);
 
 

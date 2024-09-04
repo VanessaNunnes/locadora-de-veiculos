@@ -30,10 +30,10 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloCondutor;
 				.ToList();
 		}
 
-		public List<Condutor> Filtrar(Func<Condutor, bool> predicate)
-		{
-			return _dbContext.Condutores
-				.Where(predicate)
-				.ToList();
-		}
+		//public List<Condutor> Filtrar(Func<Condutor, bool> predicate)
+		//{
+		//	return _dbContext.Condutores
+		//		.Where(predicate)
+		//		.ToList();
+		//}
 }
