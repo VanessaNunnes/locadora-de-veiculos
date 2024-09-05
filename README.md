@@ -69,12 +69,12 @@ funcionários quanto para os clientes da locadora.
 
 #### Clone o Repositório
 ```
-git clone https://github.com/academia-do-programador/locadora-de-veiculos-2024.git
+git clone https://github.com/VanessaNunnes/locadora-de-veiculos.git
 ```
 
 #### Navegue até a pasta raiz da solução
 ```
-cd locadora-de-veiculos-2024
+cd locadora-de-veiculos
 ```
 
 #### Restaure as dependências
