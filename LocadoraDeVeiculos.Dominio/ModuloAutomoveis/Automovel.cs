@@ -57,11 +57,11 @@ namespace LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 	        {
 		        case MarcadorCombustivelEnum.Vazio: return CapacidadeMax;
 
-		        case MarcadorCombustivelEnum.UmQuarto: return (CapacidadeMax - (CapacidadeMax * 1 / 4));
+		        case MarcadorCombustivelEnum.UmQuarto: return (CapacidadeMax - (CapacidadeMax * 1m / 4m));
 
-		        case MarcadorCombustivelEnum.MeioTanque: return (CapacidadeMax - (CapacidadeMax * 1 / 2));
+		        case MarcadorCombustivelEnum.MeioTanque: return (CapacidadeMax - (CapacidadeMax * 1m / 2m));
 
-		        case MarcadorCombustivelEnum.TresQuartos: return (CapacidadeMax - (CapacidadeMax * 3 / 4));
+		        case MarcadorCombustivelEnum.TresQuartos: return (CapacidadeMax - (CapacidadeMax * 3m / 4m));
 
 		        default:
 			        return 0;
