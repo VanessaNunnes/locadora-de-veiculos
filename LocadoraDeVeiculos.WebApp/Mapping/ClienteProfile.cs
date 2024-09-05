@@ -1,28 +1,31 @@
 ﻿using AutoMapper;
 using LocadoraDeVeiculos.Dominio.ModuloCliente;
+using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
 using LocadoraDeVeiculos.WebApp.Models;
 
 namespace LocadoraDeVeiculos.WebApp.Mapping;
 
 public class ClienteProfile : Profile
 {
-    public ClienteProfile()
-    {
-        CreateMap<InserirClienteViewModel, Cliente>();
-        CreateMap<EditarClienteViewModel, Cliente>();
+	public ClienteProfile()
+	{
+		CreateMap<InserirClienteViewModel, Cliente>()
+			.ForMember(dest => dest.EmpresaId, opt => opt.MapFrom<EmpresaIdValueResolver>());
 
-        CreateMap<Cliente, ListarClienteViewModel>()
-            .ForMember(
-                dest => dest.TipoCadastro,
-                opt => opt.MapFrom(x => x.TipoCadastro.ToString())
-            );
+		CreateMap<EditarClienteViewModel, Cliente>();
 
-        CreateMap<Cliente, DetalhesClienteViewModel>()
-            .ForMember(
-                dest => dest.TipoCadastro,
-                opt => opt.MapFrom(x => x.TipoCadastro.ToString())
-            );
+		CreateMap<Cliente, ListarClienteViewModel>()
+			.ForMember(
+				dest => dest.TipoCadastro,
+				opt => opt.MapFrom(x => x.TipoCadastro.ToString())
+			);
 
-        CreateMap<Cliente, EditarClienteViewModel>();
-    }
+		CreateMap<Cliente, DetalhesClienteViewModel>()
+			.ForMember(
+				dest => dest.TipoCadastro,
+				opt => opt.MapFrom(x => x.TipoCadastro.ToString())
+			);
+
+		CreateMap<Cliente, EditarClienteViewModel>();
+	}
 }

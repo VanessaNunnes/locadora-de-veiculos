@@ -30,14 +30,15 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloPlanoCobranca
                 .ToList();
         }
 
-        //public List<PlanoCobranca> Filtrar(Func<PlanoCobranca, bool> predicate)
-        //{
-        //    return _dbContext.PlanoCobrancas
-        //        .Where(predicate)
-        //        .ToList();
-        //}
+		public List<PlanoCobranca> Filtrar(Func<PlanoCobranca, bool> predicate)
+		{
+			return ObterRegistros()
+				.Include(p => p.GrupoAutomoveis)
+				.Where(predicate)
+				.ToList();
+		}
 
-        public PlanoCobranca? FiltrarPlano(Func<PlanoCobranca, bool> predicate)
+		public PlanoCobranca? FiltrarPlano(Func<PlanoCobranca, bool> predicate)
         {
 	        return ObterRegistros()
 		        .Include(p => p.GrupoAutomoveis)

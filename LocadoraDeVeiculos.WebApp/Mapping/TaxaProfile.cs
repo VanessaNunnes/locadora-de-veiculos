@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LocadoraDeVeiculos.Dominio.ModuloTaxa;
+using LocadoraDeVeiculos.WebApp.Mapping.Resolvers;
 using LocadoraDeVeiculos.WebApp.Models;
 
 namespace LocadoraDeVeiculos.WebApp.Mapping;
@@ -8,21 +9,23 @@ public class TaxaProfile : Profile
 {
     public TaxaProfile()
     {
-        CreateMap<InserirTaxaViewModel, Taxa>();
-        CreateMap<EditarTaxaViewModel, Taxa>();
+		CreateMap<InserirTaxaViewModel, Taxa>()
+			.ForMember(dest => dest.EmpresaId, opt => opt.MapFrom<EmpresaIdValueResolver>());
 
-        CreateMap<Taxa, ListarTaxaViewModel>()
-            .ForMember(
-                dest => dest.TipoCobranca,
-                opt => opt.MapFrom(x => x.TipoCobranca.ToString())
-            );
+		CreateMap<EditarTaxaViewModel, Taxa>();
 
-        CreateMap<Taxa, DetalhesTaxaViewModel>()
-            .ForMember(
-                dest => dest.TipoCobranca,
-                opt => opt.MapFrom(x => x.TipoCobranca.ToString())
-            );
+		CreateMap<Taxa, ListarTaxaViewModel>()
+			.ForMember(
+				dest => dest.TipoCobranca,
+				opt => opt.MapFrom(x => x.TipoCobranca.ToString())
+			);
 
-        CreateMap<Taxa, EditarTaxaViewModel>();
-    }
+		CreateMap<Taxa, DetalhesTaxaViewModel>()
+			.ForMember(
+				dest => dest.TipoCobranca,
+				opt => opt.MapFrom(x => x.TipoCobranca.ToString())
+			);
+
+		CreateMap<Taxa, EditarTaxaViewModel>();
+	}
 }

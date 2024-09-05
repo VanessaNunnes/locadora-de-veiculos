@@ -4,194 +4,214 @@ using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloUsuario;
 using LocadoraDeVeiculos.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
-    public class AutomovelController : WebControllerBase
+
+[Authorize(Roles = "Empresa,Funcionario")]
+public class AutomovelController : WebControllerBase
     {
-        private readonly AutomovelService servico;
-        private readonly GrupoAutomoveisService servicoGrupos;
-        private readonly IMapper mapeador;
+	private readonly AutomovelService servico;
+	private readonly GrupoAutomoveisService servicoGrupos;
+	private readonly IMapper mapeador;
 
-        public AutomovelController(
-            AutomovelService servico,
-            GrupoAutomoveisService servicoGrupos,
-            IMapper mapeador
-        )
-        {
-            this.servico = servico;
-            this.servicoGrupos = servicoGrupos;
-            this.mapeador = mapeador;
-        }
+	public AutomovelController(
+		AutenticacaoService servicoAuth,
+		AutomovelService servico,
+		GrupoAutomoveisService servicoGrupos,
+		IMapper mapeador
+	) : base(servicoAuth)
+	{
+		this.servico = servico;
+		this.servicoGrupos = servicoGrupos;
+		this.mapeador = mapeador;
+	}
 
-        public IActionResult Listar()
-        {
-            var resultado = servico.SelecionarTodos();
+	public IActionResult Listar()
+	{
+		var resultado = servico.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction("Index", "Inicio");
-            }
+			return RedirectToAction("Index", "Inicio");
+		}
 
-            var automoveis = resultado.Value;
+		var veiculos = resultado.Value;
 
-            var listarAutomoveisVm = mapeador.Map<IEnumerable<ListarAutomovelViewModel>>(automoveis);
+		var listarAutomoveisVm = mapeador.Map<IEnumerable<ListarAutomovelViewModel>>(veiculos);
 
-            return View(listarAutomoveisVm);
-        }
+		return View(listarAutomoveisVm);
+	}
 
-        public IActionResult Inserir()
-        {
-            return View(CarregarDadosFormulario());
-        }
+	public IActionResult Inserir()
+	{
+		return View(CarregarDadosFormulario());
+	}
 
-        [HttpPost]
-        public IActionResult Inserir(InserirAutomovelViewModel inserirVm)
-        {
-            if (!ModelState.IsValid)
-                return View(CarregarDadosFormulario(inserirVm));
+	[HttpPost]
+	public IActionResult Inserir(InserirAutomovelViewModel inserirVm)
+	{
+		if (!ModelState.IsValid)
+			return View(CarregarDadosFormulario(inserirVm));
 
-            var automovel = mapeador.Map<Automovel>(inserirVm);
+		var veiculo = mapeador.Map<Automovel>(inserirVm);
 
-		var resultado = servico.Inserir(automovel);
+		var resultado = servico.Inserir(veiculo);
 
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+			return RedirectToAction(nameof(Listar));
+		}
 
-                return RedirectToAction(nameof(Listar));
-            }
+		ApresentarMensagemSucesso($"O registro ID [{veiculo.Id}] foi inserido com sucesso!");
 
-            ApresentarMensagemSucesso($"O registro ID [{automovel.Id}] foi inserido com sucesso!");
+		return RedirectToAction(nameof(Listar));
+	}
 
-            return RedirectToAction(nameof(Listar));
-        }
+	public IActionResult Editar(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        public IActionResult Editar(int id)
-        {
-        var resultado = servico.SelecionarPorId(id);
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+			return RedirectToAction(nameof(Listar));
+		}
 
-            return RedirectToAction(nameof(Listar));
-        }
+		var resultadoGrupos = servicoGrupos.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-        var automoveis = resultado.Value;
+		if (resultadoGrupos.IsFailed)
+		{
+			ApresentarMensagemFalha(resultadoGrupos.ToResult());
 
-        var editarAutomovelVm = mapeador.Map<EditarAutomovelViewModel>(automoveis);
+			return null;
+		}
 
-        return View(editarAutomovelVm);
-    }
+		var veiculo = resultado.Value;
 
-        [HttpPost]
-        public IActionResult Editar(EditarAutomovelViewModel editarVm)
-        {
-        if (!ModelState.IsValid)
-            return View(CarregarDadosFormulario(editarVm));
+		var editarVm = mapeador.Map<EditarAutomovelViewModel>(veiculo);
 
-        var automovel = mapeador.Map<Automovel>(editarVm);
+		return View(editarVm);
+	}
 
-        var resultado = servico.Editar(automovel);
+	[HttpPost]
+	public IActionResult Editar(EditarAutomovelViewModel editarVm)
+	{
+		if (!ModelState.IsValid)
+			return View(CarregarDadosFormulario(editarVm));
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		var veiculo = mapeador.Map<Automovel>(editarVm);
 
-            return RedirectToAction(nameof(Listar));
-        }
+		var resultado = servico.Editar(veiculo);
 
-        ApresentarMensagemSucesso($"O registro ID [{automovel.Id}] foi editado com sucesso!");
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-        return RedirectToAction(nameof(Listar));
-    }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        public IActionResult Excluir(int id)
-        {
-            var resultado = servico.SelecionarPorId(id);
+		ApresentarMensagemSucesso($"O registro ID [{veiculo.Id}] foi editado com sucesso!");
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		return RedirectToAction(nameof(Listar));
+	}
 
-                return RedirectToAction(nameof(Listar));
-            }
+	public IActionResult Excluir(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            var automovel = resultado.Value;
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            var detalhesVm = mapeador.Map<DetalhesAutomovelViewModel>(automovel);
+			return RedirectToAction(nameof(Listar));
+		}
 
-            return View(detalhesVm);
-        }
+		var veiculo = resultado.Value;
 
-        [HttpPost]
-        public IActionResult Excluir(DetalhesAutomovelViewModel detalhesVm)
-        {
-            var resultado = servico.Excluir(detalhesVm.Id);
+		var detalhesVm = mapeador.Map<DetalhesAutomovelViewModel>(veiculo);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		return View(detalhesVm);
+	}
 
-                return RedirectToAction(nameof(Listar));
-            }
+	[HttpPost]
+	public IActionResult Excluir(DetalhesAutomovelViewModel detalhesVm)
+	{
+		var resultado = servico.Excluir(detalhesVm.Id);
 
-            ApresentarMensagemSucesso($"O registro ID [{detalhesVm.Id}] foi excluído com sucesso!");
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        public IActionResult Detalhes(int id)
-        {
-            var resultado = servico.SelecionarPorId(id);
+		ApresentarMensagemSucesso($"O registro ID [{detalhesVm.Id}] foi excluído com sucesso!");
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		return RedirectToAction(nameof(Listar));
+	}
 
-                return RedirectToAction(nameof(Listar));
-            }
+	public IActionResult Detalhes(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            var automovel = resultado.Value;
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            var detalhesVm = mapeador.Map<DetalhesAutomovelViewModel>(automovel);
+			return RedirectToAction(nameof(Listar));
+		}
 
-            return View(detalhesVm);
-        }
+		var veiculo = resultado.Value;
 
-        private FormularioAutomovelViewModel? CarregarDadosFormulario(
-            FormularioAutomovelViewModel? dadosPrevios = null)
-    {
-            var resultadoGrupos = servicoGrupos.SelecionarTodos();
+		var detalhesVm = mapeador.Map<DetalhesAutomovelViewModel>(veiculo);
 
-            if (resultadoGrupos.IsFailed)
-            {
-                ApresentarMensagemFalha(resultadoGrupos.ToResult());
+		return View(detalhesVm);
+	}
 
-                return null;
-            }
+	public IActionResult ObterFoto(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            var gruposDisponiveis = resultadoGrupos.Value;
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            if (dadosPrevios is null)
-            {
-                var formularioVm = new FormularioAutomovelViewModel
-                {
-                    GrupoAutomoveis = gruposDisponiveis
-                        .Select(g => new SelectListItem(g.Nome, g.Id.ToString()))
-                };
+			return NotFound();
+		}
 
-                return formularioVm;
-            }
+		var veiculo = resultado.Value;
 
-            dadosPrevios.GrupoAutomoveis = gruposDisponiveis
-                .Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
+		return File(veiculo.Foto, "image/jpeg");
+	}
 
-            return dadosPrevios;
-        }
-    }
+	private FormularioAutomovelViewModel? CarregarDadosFormulario(
+		FormularioAutomovelViewModel? dadosPrevios = null)
+	{
+		var resultadoGrupos = servicoGrupos.SelecionarTodos(EmpresaId.GetValueOrDefault());
+
+		if (resultadoGrupos.IsFailed)
+		{
+			ApresentarMensagemFalha(resultadoGrupos.ToResult());
+
+			return null;
+		}
+
+		var gruposDisponiveis = resultadoGrupos.Value;
+
+		if (dadosPrevios is null)
+			dadosPrevios = new FormularioAutomovelViewModel();
+
+		dadosPrevios.GrupoAutomoveis = gruposDisponiveis
+			.Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
+
+		return dadosPrevios;
+	}
+}

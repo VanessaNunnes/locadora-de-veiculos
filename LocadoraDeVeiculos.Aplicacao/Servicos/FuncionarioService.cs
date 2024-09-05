@@ -74,7 +74,7 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
 
 	public async Task<Result> Excluir(int funcionarioId)
 	{
-		var funcionario = repositorioFuncionario.SelecionarPorId(funcionarioId);
+		var funcionario = repositorioFuncionario.SelecionarPorId(f => f.Id == funcionarioId);
 
 		if (funcionario is null)
 			return Result.Fail("O funcionário não foi encontrado!");
@@ -96,7 +96,7 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
 
 	public Result<Funcionario?> SelecionarPorId(int funcionarioId)
 	{
-		var funcionario = repositorioFuncionario.SelecionarPorId(funcionarioId);
+		var funcionario = repositorioFuncionario.SelecionarPorId(f => f.Id == funcionarioId);
 
 		return Result.Ok(funcionario);
 	}

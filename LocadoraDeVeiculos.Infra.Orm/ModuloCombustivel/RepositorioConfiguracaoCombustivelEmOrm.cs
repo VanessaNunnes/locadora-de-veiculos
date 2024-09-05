@@ -16,18 +16,18 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloCombustivel;
 			this.dbContext = dbContext;
 		}
 
-		public void GravarConfiguracao(ConfiguracaoCombustivel configuracaoCombustivel)
-		{
-			dbContext.ConfiguracoesCombustiveis.Add(configuracaoCombustivel);
+	public void GravarConfiguracao(ConfiguracaoCombustivel configuracaoCombustivel)
+	{
+		dbContext.ConfiguracoesCombustiveis.Add(configuracaoCombustivel);
 
-			dbContext.SaveChanges();
-		}
-
-		public ConfiguracaoCombustivel? ObterConfiguracao()
-		{
-			return dbContext.ConfiguracoesCombustiveis
-				.OrderByDescending(c => c.Id)
-				.FirstOrDefault();
-		}
+		dbContext.SaveChanges();
 	}
+
+	public ConfiguracaoCombustivel? ObterConfiguracao(int idEmpresa)
+	{
+		return dbContext.ConfiguracoesCombustiveis
+			.OrderByDescending(c => c.Id)
+			.FirstOrDefault(c => c.EmpresaId == idEmpresa);
+	}
+}
 

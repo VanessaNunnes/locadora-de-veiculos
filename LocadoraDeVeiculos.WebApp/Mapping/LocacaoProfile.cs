@@ -12,9 +12,10 @@ namespace LocadoraDeVeiculos.WebApp.Mapping;
 
 public class LocacaoProfile : Profile
 {
-    public LocacaoProfile()
-    {
+	public LocacaoProfile()
+	{
 		CreateMap<InserirLocacaoViewModel, Locacao>()
+			.ForMember(dest => dest.EmpresaId, opt => opt.MapFrom<EmpresaIdValueResolver>())
 			.ForMember(l => l.TaxasSelecionadas, opt => opt.MapFrom<TaxasSelecionadasValueResolver>());
 
 		CreateMap<RealizarDevolucaoViewModel, Locacao>()
@@ -32,7 +33,6 @@ public class LocacaoProfile : Profile
 			.ForMember(l => l.TaxasSelecionadas,
 				opt => opt.MapFrom(src => src.TaxasSelecionadas.Select(tx => tx.Id)));
 
-		// Check-in
 		CreateMap<Locacao, ConfirmarAberturaLocacaoViewModel>()
 			.ForMember(l => l.ValorParcial, opt => opt.MapFrom<ValorParcialValueResolver>())
 			.ForMember(l => l.Condutores, opt => opt.MapFrom<CondutoresValueResolver>())
@@ -44,7 +44,6 @@ public class LocacaoProfile : Profile
 		CreateMap<ConfirmarAberturaLocacaoViewModel, Locacao>()
 			.ForMember(l => l.TaxasSelecionadas, opt => opt.MapFrom<TaxasSelecionadasValueResolver>());
 
-		// Check-out
 		CreateMap<Locacao, ConfirmarDevolucaoLocacaoViewModel>()
 			.ForMember(vm => vm.ValorTotal, opt => opt.MapFrom<ValorTotalValueResolver>())
 			.ForMember(l => l.Condutores, opt => opt.MapFrom<CondutoresValueResolver>())

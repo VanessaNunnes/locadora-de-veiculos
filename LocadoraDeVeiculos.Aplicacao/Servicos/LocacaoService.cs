@@ -24,7 +24,7 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
 
 	public Result<Locacao> Inserir(Locacao locacao)
 	{
-		var config = repositorioCombustivel.ObterConfiguracao();
+		var config = repositorioCombustivel.ObterConfiguracao(locacao.EmpresaId);
 
 		if (config is null)
 			return Result.Fail("Não foi possível obter a configuração de valores de combustíveis.");
@@ -110,18 +110,18 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
 		return Result.Ok(locacao);
 	}
 
-	public Result<List<Locacao>> SelecionarTodos()
+	public Result<List<Locacao>> SelecionarTodos(int empresaId)
 	{
-		var locacoes = repositorioLocacao.SelecionarTodos();
+		var locacoes = repositorioLocacao.Filtrar(l => l.EmpresaId == empresaId);
 
 		return Result.Ok(locacoes);
 	}
 
 	private void AbrirLocacao(Locacao locacao)
 	{
-		var automovelSelecionado = repositorioAutomovel.SelecionarPorId(locacao.AutomovelId);
+		var veiculoSelecionado = repositorioAutomovel.SelecionarPorId(locacao.AutomovelId);
 
-		locacao.Automovel = automovelSelecionado;
+		locacao.Automovel = veiculoSelecionado;
 
 		locacao.Abrir();
 
@@ -131,9 +131,9 @@ namespace LocadoraDeVeiculos.Aplicacao.Servicos;
 
 	private void FecharLocacao(Locacao locacao)
 	{
-		var automovelSelecionado = repositorioAutomovel.SelecionarPorId(locacao.AutomovelId);
+		var veiculoSelecionado = repositorioAutomovel.SelecionarPorId(locacao.AutomovelId);
 
-		locacao.Automovel = automovelSelecionado;
+		locacao.Automovel = veiculoSelecionado;
 
 		locacao.RealizarDevolucao();
 

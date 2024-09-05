@@ -2,156 +2,162 @@
 using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloCliente;
 using LocadoraDeVeiculos.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
 
+[Authorize(Roles = "Empresa,Funcionario")]
 public class ClienteController : WebControllerBase
 {
-    private readonly ClienteService servico;
-    private readonly IMapper mapeador;
+	private readonly ClienteService servico;
+	private readonly IMapper mapeador;
 
-    public ClienteController(ClienteService servico, IMapper mapeador)
-    {
-        this.servico = servico;
-        this.mapeador = mapeador;
-    }
+	public ClienteController(
+		AutenticacaoService servicoAuth,
+		ClienteService servico,
+		IMapper mapeador
+	) : base(servicoAuth)
+	{
+		this.servico = servico;
+		this.mapeador = mapeador;
+	}
 
-    public IActionResult Listar()
-    {
-        var resultado = servico.SelecionarTodos();
+	public IActionResult Listar()
+	{
+		var resultado = servico.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction("Index", "Inicio");
-        }
+			return RedirectToAction("Index", "Inicio");
+		}
 
-        var clientes = resultado.Value;
+		var clientes = resultado.Value;
 
-        var listarTaxasVm = mapeador.Map<IEnumerable<ListarClienteViewModel>>(clientes);
+		var listarTaxasVm = mapeador.Map<IEnumerable<ListarClienteViewModel>>(clientes);
 
-        return View(listarTaxasVm);
-    }
+		return View(listarTaxasVm);
+	}
 
-    public IActionResult Inserir()
-    {
-        return View(new InserirClienteViewModel());
-    }
+	public IActionResult Inserir()
+	{
+		return View(new InserirClienteViewModel());
+	}
 
-    [HttpPost]
-    public IActionResult Inserir(InserirClienteViewModel inserirVm)
-    {
-        if (!ModelState.IsValid)
-            return View(inserirVm);
+	[HttpPost]
+	public IActionResult Inserir(InserirClienteViewModel inserirVm)
+	{
+		if (!ModelState.IsValid)
+			return View(inserirVm);
 
-        var cliente = mapeador.Map<Cliente>(inserirVm);
+		var cliente = mapeador.Map<Cliente>(inserirVm);
 
 		var resultado = servico.Inserir(cliente);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return View(inserirVm);
-        }
+			return View(inserirVm);
+		}
 
-        ApresentarMensagemSucesso($"O cliente ID [{cliente.Id}] foi inserido com sucesso!");
+		ApresentarMensagemSucesso($"O cliente ID [{cliente.Id}] foi inserido com sucesso!");
 
-        return RedirectToAction(nameof(Listar));
-    }
+		return RedirectToAction(nameof(Listar));
+	}
 
-    public IActionResult Editar(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+	public IActionResult Editar(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        var cliente = resultado.Value;
+		var cliente = resultado.Value;
 
-        var editarVm = mapeador.Map<EditarClienteViewModel>(cliente);
+		var editarVm = mapeador.Map<EditarClienteViewModel>(cliente);
 
-        return View(editarVm);
-    }
+		return View(editarVm);
+	}
 
-    [HttpPost]
-    public IActionResult Editar(EditarClienteViewModel editarVm)
-    {
-        if (!ModelState.IsValid)
-            return View(editarVm);
+	[HttpPost]
+	public IActionResult Editar(EditarClienteViewModel editarVm)
+	{
+		if (!ModelState.IsValid)
+			return View(editarVm);
 
-        var cliente = mapeador.Map<Cliente>(editarVm);
+		var cliente = mapeador.Map<Cliente>(editarVm);
 
-        var resultado = servico.Editar(cliente);
+		var resultado = servico.Editar(cliente);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return View(editarVm);
-        }
+			return View(editarVm);
+		}
 
-        ApresentarMensagemSucesso($"O cliente ID [{cliente.Id}] foi editado com sucesso!");
+		ApresentarMensagemSucesso($"O cliente ID [{cliente.Id}] foi editado com sucesso!");
 
-        return RedirectToAction(nameof(Listar));
-    }
+		return RedirectToAction(nameof(Listar));
+	}
 
-    public IActionResult Excluir(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+	public IActionResult Excluir(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        var cliente = resultado.Value;
+		var cliente = resultado.Value;
 
-        var detalhesVm = mapeador.Map<DetalhesClienteViewModel>(cliente);
+		var detalhesVm = mapeador.Map<DetalhesClienteViewModel>(cliente);
 
-        return View(detalhesVm);
-    }
+		return View(detalhesVm);
+	}
 
-    [HttpPost]
-    public IActionResult Excluir(DetalhesClienteViewModel detalhesVm)
-    {
-        var resultado = servico.Excluir(detalhesVm.Id);
+	[HttpPost]
+	public IActionResult Excluir(DetalhesClienteViewModel detalhesVm)
+	{
+		var resultado = servico.Excluir(detalhesVm.Id);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return View(detalhesVm);
-        }
+			return View(detalhesVm);
+		}
 
-        ApresentarMensagemSucesso($"O cliente ID [{detalhesVm.Id}] foi excluído com sucesso!");
+		ApresentarMensagemSucesso($"O cliente ID [{detalhesVm.Id}] foi excluído com sucesso!");
 
-        return RedirectToAction(nameof(Listar));
-    }
+		return RedirectToAction(nameof(Listar));
+	}
 
-    public IActionResult Detalhes(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+	public IActionResult Detalhes(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        var cliente = resultado.Value;
+		var cliente = resultado.Value;
 
-        var detalhesVm = mapeador.Map<DetalhesClienteViewModel>(cliente);
+		var detalhesVm = mapeador.Map<DetalhesClienteViewModel>(cliente);
 
-        return View(detalhesVm);
-    }
+		return View(detalhesVm);
+	}
 }

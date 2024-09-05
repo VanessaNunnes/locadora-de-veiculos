@@ -6,23 +6,25 @@ using LocadoraDeVeiculos.WebApp.Models;
 namespace LocadoraDeVeiculos.WebApp.Mapping;
     public class PlanoCobrancaProfile : Profile
     {
-        public PlanoCobrancaProfile()
-        {
-        CreateMap<InserirPlanoCobrancaViewModel, PlanoCobranca>();
-        CreateMap<EditarPlanoCobrancaViewModel, PlanoCobranca>();
+	public PlanoCobrancaProfile()
+	{
+		CreateMap<InserirPlanoCobrancaViewModel, PlanoCobranca>()
+			.ForMember(dest => dest.EmpresaId, opt => opt.MapFrom<EmpresaIdValueResolver>());
 
-        CreateMap<PlanoCobranca, ListarPlanoCobrancaViewModel>()
-            .ForMember(
-                dest => dest.GrupoAutomoveis,
-                opt => opt.MapFrom(src => src.GrupoAutomoveis!.Nome));
+		CreateMap<EditarPlanoCobrancaViewModel, PlanoCobranca>();
 
-        CreateMap<PlanoCobranca, DetalhesPlanoCobrancaViewModel>()
-            .ForMember(
-                dest => dest.GrupoAutomoveis,
-                opt => opt.MapFrom(src => src.GrupoAutomoveis!.Nome));
+		CreateMap<PlanoCobranca, ListarPlanoCobrancaViewModel>()
+			.ForMember(
+				dest => dest.GrupoAutomoveis,
+				opt => opt.MapFrom(src => src.GrupoAutomoveis!.Nome));
 
-        CreateMap<PlanoCobranca, EditarPlanoCobrancaViewModel>()
-            .ForMember(dest => dest.GrupoAutomoveis, opt => opt.MapFrom<GrupoAutomoveisValueResolver>());
-    }
+		CreateMap<PlanoCobranca, DetalhesPlanoCobrancaViewModel>()
+			.ForMember(
+				dest => dest.GrupoAutomoveis,
+				opt => opt.MapFrom(src => src.GrupoAutomoveis!.Nome));
+
+		CreateMap<PlanoCobranca, EditarPlanoCobrancaViewModel>()
+			.ForMember(dest => dest.GrupoAutomoveis, opt => opt.MapFrom<GrupoAutomoveisValueResolver>());
+	}
 }
 

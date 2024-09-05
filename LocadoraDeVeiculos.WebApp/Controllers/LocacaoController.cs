@@ -4,38 +4,41 @@ using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloLocacao;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
 
+[Authorize(Roles = "Empresa,Funcionario")]
 public class LocacaoController : WebControllerBase
 {
-    private readonly LocacaoService servicoLocacao;
-    private readonly AutomovelService servicoAutomovel;
-    private readonly CondutorService servicoCondutor;
-    private readonly TaxaService servicoTaxa;
-    private readonly IMapper mapeador;
+	private readonly LocacaoService servicoLocacao;
+	private readonly AutomovelService servicoAutomovel;
+	private readonly CondutorService servicoCondutor;
+	private readonly TaxaService servicoTaxa;
+	private readonly IMapper mapeador;
 
-    public LocacaoController(
-        LocacaoService servicoLocacao,
-        AutomovelService servicoAutomovel,
-        CondutorService servicoCondutor,
-        TaxaService servicoTaxa,
-        IMapper mapeador
-    )
-    {
-        this.servicoLocacao = servicoLocacao;
-        this.servicoAutomovel = servicoAutomovel;
-        this.servicoCondutor = servicoCondutor;
-        this.servicoTaxa = servicoTaxa;
-        this.mapeador = mapeador;
-    }
+	public LocacaoController(
+		AutenticacaoService servicoAuth,
+		LocacaoService servicoLocacao,
+		AutomovelService servicoAutomovel,
+		CondutorService servicoCondutor,
+		TaxaService servicoTaxa,
+		IMapper mapeador
+	) : base(servicoAuth)
+	{
+		this.servicoLocacao = servicoLocacao;
+		this.servicoAutomovel = servicoAutomovel;
+		this.servicoCondutor = servicoCondutor;
+		this.servicoTaxa = servicoTaxa;
+		this.mapeador = mapeador;
+	}
 
 	public IActionResult Listar()
 	{
-		var resultado = servicoLocacao.SelecionarTodos();
+		var resultado = servicoLocacao.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
 		if (resultado.IsFailed)
 		{
@@ -166,21 +169,20 @@ public class LocacaoController : WebControllerBase
 		return RedirectToAction(nameof(Listar));
 	}
 
-
 	private InserirLocacaoViewModel CarregarDadosFormulario(InserirLocacaoViewModel? formularioVm = null)
 	{
-		var condutores = servicoCondutor.SelecionarTodos().Value;
-		var veiculos = servicoAutomovel.SelecionarTodos().Value;
-		var taxas = servicoTaxa.SelecionarTodos().Value;
+		var condutores = servicoCondutor.SelecionarTodos(EmpresaId.GetValueOrDefault()).Value;
+		var automoveis = servicoAutomovel.SelecionarTodos(EmpresaId.GetValueOrDefault()).Value;
+		var taxas = servicoTaxa.SelecionarTodos(EmpresaId.GetValueOrDefault()).Value;
 
-		if (formularioVm is null){}
+		if (formularioVm is null)
 			formularioVm = new InserirLocacaoViewModel();
 
 		formularioVm.Condutores =
 			condutores.Select(c => new SelectListItem(c.Nome, c.Id.ToString()));
 
 		formularioVm.Automoveis =
-			veiculos.Select(c => new SelectListItem(c.Modelo, c.Id.ToString()));
+			automoveis.Select(c => new SelectListItem(c.Modelo, c.Id.ToString()));
 
 		formularioVm.Taxas =
 			taxas.Select(c => new SelectListItem(c.ToString(), c.Id.ToString()));

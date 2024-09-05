@@ -67,11 +67,14 @@ namespace LocadoraDeVeiculos.WebApp
             builder.Services.AddScoped<IRepositorioFuncionario, RepositorioFuncionarioEmOrm>();
             builder.Services.AddScoped<FuncionarioService>();
 
+            builder.Services.AddScoped<FotoValueResolver>();
+
 			builder.Services.AddScoped<GrupoAutomoveisValueResolver>();
 			builder.Services.AddScoped<TaxasSelecionadasValueResolver>();
 			builder.Services.AddScoped<TaxasValueResolver>();
 			builder.Services.AddScoped<CondutoresValueResolver>();
 			builder.Services.AddScoped<AutomoveisValueResolver>();
+			
 			builder.Services.AddScoped<ValorParcialValueResolver>();
 			builder.Services.AddScoped<ValorTotalValueResolver>();
 			builder.Services.AddScoped<EmpresaIdValueResolver>();

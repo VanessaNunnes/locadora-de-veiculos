@@ -33,10 +33,13 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloLocacao;
 				.ToList();
 		}
 
-		//public List<Locacao> Filtrar(Func<Locacao, bool> predicate)
-		//{
-		//	return _dbContext.Locacoes
-		//		.Where(predicate)
-		//		.ToList();
-		//}
+		public List<Locacao> Filtrar(Func<Locacao, bool> predicate)
+		{
+			return ObterRegistros()
+				.Include(l => l.Condutor)
+				.Include(l => l.Automovel)
+				.Include(l => l.ConfiguracaoCombustivel)
+				.Where(predicate)
+				.ToList();
+		}
 }

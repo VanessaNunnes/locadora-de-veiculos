@@ -19,11 +19,11 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloGrupoAutomoveis;
             return _dbContext.GrupoAutomoveis;
         }
 
-        //public List<GrupoAutomoveis> Filtrar(Func<GrupoAutomoveis, bool> predicate)
-        //{
-        //    return _dbContext.GrupoAutomoveis
-        //        .Where(predicate)
-        //        .ToList();
-        //}
+    public List<GrupoAutomoveis> Filtrar(Func<GrupoAutomoveis, bool> predicate)
+    {
+        return _dbContext.GrupoAutomoveis
+            .Where(predicate)
+            .ToList();
     }
+}
 

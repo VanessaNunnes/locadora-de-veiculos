@@ -10,23 +10,30 @@ public class RepositorioFuncionarioEmOrm : RepositorioBaseEmOrm<Funcionario>, IR
     {
     }
 
-    protected override DbSet<Funcionario> ObterRegistros()
-    {
-        return _dbContext.Funcionarios;
-    }
+	protected override DbSet<Funcionario> ObterRegistros()
+	{
+		return _dbContext.Funcionarios;
+	}
 
-    public override Funcionario? SelecionarPorId(int id)
-    {
-        return _dbContext.Funcionarios
-            .Include(u => u.Empresa)
-            .FirstOrDefault(u => u.Id == id);
-    }
+	public override Funcionario? SelecionarPorId(int funcionarioId)
+	{
+		return _dbContext.Funcionarios
+			.Include(u => u.Empresa)
+			.FirstOrDefault(f => f.Id == funcionarioId);
+	}
 
-    public List<Funcionario> SelecionarTodos(Func<Funcionario, bool> predicate)
-    {
-        return _dbContext.Funcionarios
-            .Include(u => u.Empresa)
-            .Where(predicate)
-            .ToList();
-    }
+	public Funcionario? SelecionarPorId(Func<Funcionario, bool> predicate)
+	{
+		return _dbContext.Funcionarios
+			.Include(u => u.Empresa)
+			.FirstOrDefault(predicate);
+	}
+
+	public List<Funcionario> SelecionarTodos(Func<Funcionario, bool> predicate)
+	{
+		return _dbContext.Funcionarios
+			.Include(u => u.Empresa)
+			.Where(predicate)
+			.ToList();
+	}
 }

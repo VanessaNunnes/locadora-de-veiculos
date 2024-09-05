@@ -51,5 +51,15 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloCondutor;
 				.HasForeignKey(c => c.ClienteId)
 				.OnDelete(DeleteBehavior.Restrict);
 
-		}
+			builder.Property(s => s.EmpresaId)
+				.HasColumnType("int")
+				.HasColumnName("Empresa_Id")
+				.IsRequired();
+
+			builder.HasOne(g => g.Empresa)
+				.WithMany()
+				.HasForeignKey(s => s.EmpresaId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+	}
 	}

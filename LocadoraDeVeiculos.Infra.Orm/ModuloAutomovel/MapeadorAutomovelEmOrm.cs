@@ -39,7 +39,11 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
                 .HasColumnType("int")
                 .IsRequired();
 
-            builder.Property(a => a.GrupoAutomoveisId)
+            builder.Property(v => v.Foto)
+	            .HasColumnType("varbinary(max)")
+	            .HasDefaultValue(Array.Empty<byte>());
+
+			builder.Property(a => a.GrupoAutomoveisId)
                 .HasColumnType("int")
                 .IsRequired();
 
@@ -48,6 +52,16 @@ namespace LocadoraDeVeiculos.Infra.Orm.ModuloAutomovel;
                 .HasForeignKey(a => a.GrupoAutomoveisId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-        }
+			builder.Property(s => s.EmpresaId)
+				.HasColumnType("int")
+				.HasColumnName("Empresa_Id")
+				.IsRequired();
+
+			builder.HasOne(g => g.Empresa)
+				.WithMany()
+				.HasForeignKey(s => s.EmpresaId)
+				.OnDelete(DeleteBehavior.Restrict);
+
+	}
 }
 

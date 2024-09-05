@@ -3,160 +3,163 @@ using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloGrupoAutomoveis;
 using LocadoraDeVeiculos.WebApp.Extensions;
 using LocadoraDeVeiculos.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
-    public class GrupoAutomoveisController : WebControllerBase
-    {
-        private readonly GrupoAutomoveisService servicoGrupoAutomoveis;
-        private readonly IMapper mapeador;
 
-        public GrupoAutomoveisController(
-            GrupoAutomoveisService servicoGrupoAutomoveis,
-            IMapper mapeador
-        )
-        {
-            this.servicoGrupoAutomoveis = servicoGrupoAutomoveis;
-            this.mapeador = mapeador;
-        }
+[Authorize(Roles = "Empresa,Funcionario")]
+public class GrupoAutomoveisController : WebControllerBase
+{
+	private readonly GrupoAutomoveisService servico;
+	private readonly IMapper mapeador;
 
-        public IActionResult Listar()
-        {
-            var resultado = servicoGrupoAutomoveis.SelecionarTodos();
+	public GrupoAutomoveisController(
+		AutenticacaoService servicoAuth,
+		GrupoAutomoveisService servico,
+		IMapper mapeador
+	) : base(servicoAuth)
+	{
+		this.servico = servico;
+		this.mapeador = mapeador;
+	}
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+	public IActionResult Listar()
+	{
+		var resultado = servico.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-                return RedirectToAction("Index", "Inicio");
-            }
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            var grupoAutomoveis = resultado.Value;
+			return RedirectToAction("Index", "Inicio");
+		}
 
-            var listarGrupoAutomoveissVm = mapeador.Map<IEnumerable<ListarGrupoAutomoveisViewModel>>(grupoAutomoveis);
+		var grupos = resultado.Value;
 
-            ViewBag.Mensagem = TempData.DesserializarMensagemViewModel();
+		var listarGruposVm =
+			mapeador.Map<IEnumerable<ListarGrupoAutomoveisViewModel>>(grupos);
 
-            return View(listarGrupoAutomoveissVm);
-        }
+		return View(listarGruposVm);
+	}
 
-        public IActionResult Inserir()
-        {
-            return View();
-        }
+	public IActionResult Inserir()
+	{
+		return View();
+	}
 
-        [HttpPost]
-        public IActionResult Inserir(InserirGrupoAutomoveisViewModel inserirGrupoAutomoveisVm)
-        {
-            if (!ModelState.IsValid)
-                return View(inserirGrupoAutomoveisVm);
+	[HttpPost]
+	public IActionResult Inserir(InserirGrupoAutomoveisViewModel inserirVm)
+	{
+		if (!ModelState.IsValid)
+			return View(inserirVm);
 
-            var grupoAutomoveis = mapeador.Map<GrupoAutomoveis>(inserirGrupoAutomoveisVm);
+		var grupo = mapeador.Map<GrupoAutomoveis>(inserirVm);
 
-            var resultado = servicoGrupoAutomoveis.Inserir(grupoAutomoveis);
+		var resultado = servico.Inserir(grupo);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            ApresentarMensagemSucesso($"O registro ID [{grupoAutomoveis.Id}] foi inserido com sucesso!");
+		ApresentarMensagemSucesso($"O registro ID [{grupo.Id}] foi inserido com sucesso!");
 
-            return RedirectToAction(nameof(Listar));
-        }
+		return RedirectToAction(nameof(Listar));
+	}
 
-        public IActionResult Editar(int id)
-        {
-            var resultado = servicoGrupoAutomoveis.SelecionarPorId(id);
+	public IActionResult Editar(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            var grupoAutomoveis = resultado.Value;
+		var grupo = resultado.Value;
 
-            var editarGrupoAutomoveisVm = mapeador.Map<EditarGrupoAutomoveisViewModel>(grupoAutomoveis);
+		var editarVm = mapeador.Map<EditarGrupoAutomoveisViewModel>(grupo);
 
-            return View(editarGrupoAutomoveisVm);
-        }
+		return View(editarVm);
+	}
 
-        [HttpPost]
-        public IActionResult Editar(EditarGrupoAutomoveisViewModel editarGrupoAutomoveisVm)
-        {
-            if (!ModelState.IsValid)
-                return View(editarGrupoAutomoveisVm);
+	[HttpPost]
+	public IActionResult Editar(EditarGrupoAutomoveisViewModel editarVM)
+	{
+		if (!ModelState.IsValid)
+			return View(editarVM);
 
-            var grupoAutomoveis = mapeador.Map<GrupoAutomoveis>(editarGrupoAutomoveisVm);
+		var grupo = mapeador.Map<GrupoAutomoveis>(editarVM);
 
-            var resultado = servicoGrupoAutomoveis.Editar(grupoAutomoveis);
+		var resultado = servico.Editar(grupo);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            ApresentarMensagemSucesso($"O registro ID [{editarGrupoAutomoveisVm.Id}] foi editado com sucesso!");
+		ApresentarMensagemSucesso($"O registro ID [{grupo.Id}] foi editado com sucesso!");
 
-            return RedirectToAction(nameof(Listar));
-        }
+		return RedirectToAction(nameof(Listar));
+	}
 
-        public IActionResult Excluir(int id)
-        {
-            var resultado = servicoGrupoAutomoveis.SelecionarPorId(id);
+	public IActionResult Excluir(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            var grupoAutomoveis = resultado.Value;
+		var grupo = resultado.Value;
 
-            var detalhesGrupoAutomoveisViewModel = mapeador.Map<DetalhesGrupoAutomoveisViewModel>(grupoAutomoveis);
+		var detalhesVm = mapeador.Map<DetalhesGrupoAutomoveisViewModel>(grupo);
 
-            return View(detalhesGrupoAutomoveisViewModel);
-        }
+		return View(detalhesVm);
+	}
 
-        [HttpPost]
-        public IActionResult Excluir(DetalhesGrupoAutomoveisViewModel detalhesGrupoAutomoveisViewModel)
-        {
-            var resultado = servicoGrupoAutomoveis.Excluir(detalhesGrupoAutomoveisViewModel.Id);
+	[HttpPost]
+	public IActionResult Excluir(DetalhesGrupoAutomoveisViewModel detalhesVm)
+	{
+		var resultado = servico.Excluir(detalhesVm.Id);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado);
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            ApresentarMensagemSucesso($"O registro ID [{detalhesGrupoAutomoveisViewModel.Id}] foi excluído com sucesso!");
+		ApresentarMensagemSucesso($"O registro ID [{detalhesVm.Id}] foi excluído com sucesso!");
 
-            return RedirectToAction(nameof(Listar));
-        }
+		return RedirectToAction(nameof(Listar));
+	}
 
-        public IActionResult Detalhes(int id)
-        {
-            var resultado = servicoGrupoAutomoveis.SelecionarPorId(id);
+	public IActionResult Detalhes(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-            if (resultado.IsFailed)
-            {
-                ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-                return RedirectToAction(nameof(Listar));
-            }
+			return RedirectToAction(nameof(Listar));
+		}
 
-            var grupoAutomoveis = resultado.Value;
+		var grupo = resultado.Value;
 
-            var detalhesGrupoAutomoveisViewModel = mapeador.Map<DetalhesGrupoAutomoveisViewModel>(grupoAutomoveis);
+		var detalhesVm = mapeador.Map<DetalhesGrupoAutomoveisViewModel>(grupo);
 
-            return View(detalhesGrupoAutomoveisViewModel);
-        }
-    }
+		return View(detalhesVm);
+	}
+}

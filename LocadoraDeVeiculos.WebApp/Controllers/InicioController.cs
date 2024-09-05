@@ -6,32 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
 
-    public class InicioController : WebControllerBase
+    public class InicioController : Controller
     {
-    private readonly GrupoAutomoveisService servicoGrupoAutomoveis;
-    private readonly IMapper mapeador;
-
-    public InicioController(
-        GrupoAutomoveisService servicoGrupoAutomoveis,
-        IMapper mapeador
-    )
-    {
-        this.servicoGrupoAutomoveis = servicoGrupoAutomoveis;
-        this.mapeador = mapeador;
-    }
-
-    public ViewResult Index()
-    {
-        
-        if (UsuarioId.HasValue)
-        {
-            ViewBag.QuantidadeGrupoAutomoveis = servicoGrupoAutomoveis.SelecionarTodos().Value.Count;
-        }
-
-        ViewBag.Mensagem = TempData.DesserializarMensagemViewModel();
-
-        return View();
-    }
+	public IActionResult Index()
+	{
+		return View();
+	}
 
 }
 

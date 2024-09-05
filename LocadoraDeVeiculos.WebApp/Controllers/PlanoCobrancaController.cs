@@ -3,195 +3,185 @@ using LocadoraDeVeiculos.Aplicacao.Servicos;
 using LocadoraDeVeiculos.Dominio.ModuloAutomoveis;
 using LocadoraDeVeiculos.Dominio.ModuloPlanoCobranca;
 using LocadoraDeVeiculos.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
-    public class PlanoCobrancaController : WebControllerBase
+[Authorize(Roles = "Empresa,Funcionario")]
+public class PlanoCobrancaController : WebControllerBase
 {
-    private readonly PlanoCobrancaService servico;
-    private readonly GrupoAutomoveisService servicoGrupos;
-    private readonly IMapper mapeador;
+	private readonly PlanoCobrancaService servico;
+	private readonly GrupoAutomoveisService servicoGrupos;
+	private readonly IMapper mapeador;
 
-    public PlanoCobrancaController(
-        PlanoCobrancaService servico,
-        GrupoAutomoveisService servicoGrupos,
-        IMapper mapeador)
-    {
-        this.servico = servico;
-        this.servicoGrupos = servicoGrupos;
-        this.mapeador = mapeador;
-    }
+	public PlanoCobrancaController(
+		AutenticacaoService servicoAuth,
+		PlanoCobrancaService servico,
+		GrupoAutomoveisService servicoGrupos,
+		IMapper mapeador) : base(servicoAuth)
+	{
+		this.servico = servico;
+		this.servicoGrupos = servicoGrupos;
+		this.mapeador = mapeador;
+	}
 
-    public IActionResult Listar()
-    {
-        var resultado = servico.SelecionarTodos();
+	public IActionResult Listar()
+	{
+		var resultado = servico.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction("Index", "Inicio");
-        }
+			return RedirectToAction("Index", "Inicio");
+		}
 
-        var planosCobranca = resultado.Value;
+		var planosCobranca = resultado.Value;
 
-        var listarPlanosVm = mapeador.Map<IEnumerable<ListarPlanoCobrancaViewModel>>(planosCobranca);
+		var listarPlanosVm = mapeador.Map<IEnumerable<ListarPlanoCobrancaViewModel>>(planosCobranca);
 
-        return View(listarPlanosVm);
-    }
+		return View(listarPlanosVm);
+	}
 
-    public IActionResult Inserir()
-    {
-        return View(CarregarDadosFormulario());
-    }
+	public IActionResult Inserir()
+	{
+		return View(CarregarDadosFormulario());
+	}
 
-    [HttpPost]
-    public IActionResult Inserir(InserirPlanoCobrancaViewModel inserirVm)
-    {
-        if (!ModelState.IsValid)
-            return View(CarregarDadosFormulario(inserirVm));
+	[HttpPost]
+	public IActionResult Inserir(InserirPlanoCobrancaViewModel inserirVm)
+	{
+		if (!ModelState.IsValid)
+			return View(CarregarDadosFormulario(inserirVm));
 
-        var planoCobranca = mapeador.Map<PlanoCobranca>(inserirVm);
+		var planoCobranca = mapeador.Map<PlanoCobranca>(inserirVm);
 
-        var resultado = servico.Inserir(planoCobranca);
+		var resultado = servico.Inserir(planoCobranca);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        ApresentarMensagemSucesso($"O registro ID [{planoCobranca.Id}] foi inserido com sucesso!");
+		ApresentarMensagemSucesso($"O registro ID [{planoCobranca.Id}] foi inserido com sucesso!");
 
-        return RedirectToAction(nameof(Listar));
-    }
+		return RedirectToAction(nameof(Listar));
+	}
 
-    public IActionResult Editar(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+	public IActionResult Editar(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-            return RedirectToAction(nameof(Listar));
-        }
+			return RedirectToAction(nameof(Listar));
+		}
 
-        var planoCobranca = resultado.Value;
+		var planoCobranca = resultado.Value;
 
-        var editarVm = mapeador.Map<EditarPlanoCobrancaViewModel>(planoCobranca);
+		var editarVm = mapeador.Map<EditarPlanoCobrancaViewModel>(planoCobranca);
 
-        var grupos = servicoGrupos.SelecionarTodos().Value;
+		return View(editarVm);
+	}
 
-        editarVm.GrupoAutomoveis = grupos
-            .Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
+	[HttpPost]
+	public async Task<IActionResult> Editar(EditarPlanoCobrancaViewModel editarVm)
+	{
+		if (!ModelState.IsValid)
+			return View(CarregarDadosFormulario(editarVm));
 
-        return View(editarVm);
-    }
+		var planoCobranca = mapeador.Map<PlanoCobranca>(editarVm);
 
-    [HttpPost]
-    public async Task<IActionResult> Editar(EditarPlanoCobrancaViewModel editarVm)
-    {
-        if (!ModelState.IsValid)
-            return View(CarregarDadosFormulario(editarVm));
+		var resultado = servico.Editar(planoCobranca);
 
-        var planoCobranca = mapeador.Map<PlanoCobranca>(editarVm);
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-        var resultado = servico.Editar(planoCobranca);
+			return RedirectToAction(nameof(Listar));
+		}
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		ApresentarMensagemSucesso($"O registro ID [{planoCobranca.Id}] foi editado com sucesso!");
 
-            return RedirectToAction(nameof(Listar));
-        }
+		return RedirectToAction(nameof(Listar));
+	}
 
-        ApresentarMensagemSucesso($"O registro ID [{planoCobranca.Id}] foi editado com sucesso!");
+	public IActionResult Excluir(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        return RedirectToAction(nameof(Listar));
-    }
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-    public IActionResult Excluir(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+			return RedirectToAction(nameof(Listar));
+		}
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		var planoCobranca = resultado.Value;
 
-            return RedirectToAction(nameof(Listar));
-        }
+		var detalhesVm = mapeador.Map<DetalhesPlanoCobrancaViewModel>(planoCobranca);
 
-        var planoCobranca = resultado.Value;
+		return View(detalhesVm);
+	}
 
-        var detalhesVm = mapeador.Map<DetalhesPlanoCobrancaViewModel>(planoCobranca);
+	[HttpPost]
+	public IActionResult Excluir(DetalhesPlanoCobrancaViewModel detalhesVm)
+	{
+		var resultado = servico.Excluir(detalhesVm.Id);
 
-        return View(detalhesVm);
-    }
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-    [HttpPost]
-    public IActionResult Excluir(DetalhesPlanoCobrancaViewModel detalhesVm)
-    {
-        var resultado = servico.Excluir(detalhesVm.Id);
+			return RedirectToAction(nameof(Listar));
+		}
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		ApresentarMensagemSucesso($"O registro ID [{detalhesVm.Id}] foi excluído com sucesso!");
 
-            return RedirectToAction(nameof(Listar));
-        }
+		return RedirectToAction(nameof(Listar));
+	}
 
-        ApresentarMensagemSucesso($"O registro ID [{detalhesVm.Id}] foi excluído com sucesso!");
+	public IActionResult Detalhes(int id)
+	{
+		var resultado = servico.SelecionarPorId(id);
 
-        return RedirectToAction(nameof(Listar));
-    }
+		if (resultado.IsFailed)
+		{
+			ApresentarMensagemFalha(resultado.ToResult());
 
-    public IActionResult Detalhes(int id)
-    {
-        var resultado = servico.SelecionarPorId(id);
+			return RedirectToAction(nameof(Listar));
+		}
 
-        if (resultado.IsFailed)
-        {
-            ApresentarMensagemFalha(resultado.ToResult());
+		var planoCobranca = resultado.Value;
 
-            return RedirectToAction(nameof(Listar));
-        }
+		var detalhesVm = mapeador.Map<DetalhesPlanoCobrancaViewModel>(planoCobranca);
 
-        var planoCobranca = resultado.Value;
+		return View(detalhesVm);
+	}
 
-        var detalhesVm = mapeador.Map<DetalhesPlanoCobrancaViewModel>(planoCobranca);
+	private FormularioPlanoCobrancaViewModel? CarregarDadosFormulario(FormularioPlanoCobrancaViewModel? dadosPrevios = null)
+	{
+		var resultadoGrupos = servicoGrupos.SelecionarTodos(EmpresaId.GetValueOrDefault());
 
-        return View(detalhesVm);
-    }
+		if (resultadoGrupos.IsFailed)
+		{
+			ApresentarMensagemFalha(resultadoGrupos.ToResult());
 
-    private FormularioPlanoCobrancaViewModel? CarregarDadosFormulario(FormularioPlanoCobrancaViewModel? dadosPrevios = null)
-    {
-        var resultadoGrupos = servicoGrupos.SelecionarTodos();
+			return null;
+		}
 
-        if (resultadoGrupos.IsFailed)
-        {
-            ApresentarMensagemFalha(resultadoGrupos.ToResult());
+		if (dadosPrevios is null)
+			dadosPrevios = new FormularioPlanoCobrancaViewModel();
 
-            return null;
-        }
+		dadosPrevios.GrupoAutomoveis = resultadoGrupos.Value
+			.Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
 
-        if (dadosPrevios is null)
-        {
-            var formularioVm = new FormularioPlanoCobrancaViewModel
-            {
-                GrupoAutomoveis = resultadoGrupos.Value
-                    .Select(g => new SelectListItem(g.Nome, g.Id.ToString()))
-            };
-
-            return formularioVm;
-        }
-
-        dadosPrevios.GrupoAutomoveis = resultadoGrupos.Value
-            .Select(g => new SelectListItem(g.Nome, g.Id.ToString()));
-
-        return dadosPrevios;
-    }
+		return dadosPrevios;
+	}
 }
 

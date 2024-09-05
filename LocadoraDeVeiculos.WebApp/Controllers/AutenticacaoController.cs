@@ -9,79 +9,79 @@ public class AutenticacaoController : WebControllerBase
 {
     private readonly AutenticacaoService servicoAutenticacao;
 
-    public AutenticacaoController(AutenticacaoService servicoAutenticacao)
-    {
-        this.servicoAutenticacao = servicoAutenticacao;
-    }
+	public AutenticacaoController(AutenticacaoService servicoAutenticacao) : base(servicoAutenticacao)
+	{
+		this.servicoAutenticacao = servicoAutenticacao;
+	}
 
-    public IActionResult Registrar()
-    {
-        return View(new RegistrarViewModel());
-    }
+	public IActionResult Registrar()
+	{
+		return View(new RegistrarViewModel());
+	}
 
-    [HttpPost]
-    public async Task<IActionResult> Registrar(RegistrarViewModel registrarVm)
-    {
-        if (!ModelState.IsValid)
-            return View(registrarVm);
+	[HttpPost]
+	public async Task<IActionResult> Registrar(RegistrarViewModel registrarVm)
+	{
+		if (!ModelState.IsValid)
+			return View(registrarVm);
 
-        var usuario = new Usuario()
-        {
-            UserName = registrarVm.Usuario,
-            Email = registrarVm.Email
-        };
+		var usuario = new Usuario()
+		{
+			UserName = registrarVm.Usuario,
+			Email = registrarVm.Email
+		};
 
-        var senha = registrarVm.Senha!;
+		var senha = registrarVm.Senha!;
 
-        var resultado = await servicoAutenticacao
-            .Registrar(usuario, senha, TipoUsuarioEnum.Empresa);
+		var resultado = await servicoAutenticacao
+			.Registrar(usuario, senha, TipoUsuarioEnum.Empresa);
 
-        if (resultado.IsSuccess)
-            return RedirectToAction("Index", "Inicio");
+		if (resultado.IsSuccess)
+			return RedirectToAction("Index", "Inicio");
 
-        foreach (var erro in resultado.Errors)
-            ModelState.AddModelError(string.Empty, erro.Message);
+		foreach (var erro in resultado.Errors)
+			ModelState.AddModelError(string.Empty, erro.Message);
 
-        return View(registrarVm);
-    }
+		return View(registrarVm);
+	}
 
-    public IActionResult Login(string? returnUrl = null)
-    {
-        ViewBag.ReturnUrl = returnUrl;
+	public IActionResult Login(string? returnUrl = null)
+	{
+		ViewBag.ReturnUrl = returnUrl;
 
-        return View();
-    }
+		return View();
+	}
 
-    [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel loginVm, string? returnUrl = null)
-    {
-        ViewBag.ReturnUrl = returnUrl;
+	[HttpPost]
+	public async Task<IActionResult> Login(LoginViewModel loginVm, string? returnUrl = null)
+	{
+		ViewBag.ReturnUrl = returnUrl;
 
-        if (!ModelState.IsValid)
-            return View(loginVm);
+		if (!ModelState.IsValid)
+			return View(loginVm);
 
-        var resultado = await servicoAutenticacao.Login(loginVm.Usuario!, loginVm.Senha!);
+		var resultado = await servicoAutenticacao.Login(loginVm.Usuario!, loginVm.Senha!);
 
-        if (resultado.IsSuccess)
-            return LocalRedirect(returnUrl ?? "/");
+		if (resultado.IsSuccess)
+			return LocalRedirect(returnUrl ?? "/");
 
-        var msgErro = resultado.Errors.First().Message;
+		var msgErro = resultado.Errors.First().Message;
 
-        ModelState.AddModelError(string.Empty, msgErro);
+		ModelState.AddModelError(string.Empty, msgErro);
 
-        return View(loginVm);
-    }
+		return View(loginVm);
+	}
 
-    [HttpPost]
-    public async Task<IActionResult> Logout()
-    {
-        await servicoAutenticacao.Logout();
+	[HttpPost]
+	public async Task<IActionResult> Logout()
+	{
+		await servicoAutenticacao.Logout();
 
-        return RedirectToAction(nameof(Login));
-    }
+		return RedirectToAction(nameof(Login));
+	}
 
-    public IActionResult AcessoNegado()
-    {
-        return View();
-    }
+	public IActionResult AcessoNegado()
+	{
+		return View();
+	}
 }

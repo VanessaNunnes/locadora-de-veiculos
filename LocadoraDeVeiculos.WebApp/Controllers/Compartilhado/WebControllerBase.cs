@@ -3,52 +3,57 @@ using LocadoraDeVeiculos.WebApp.Models;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using LocadoraDeVeiculos.Aplicacao.Servicos;
 
 namespace LocadoraDeVeiculos.WebApp.Controllers;
 
     public class WebControllerBase : Controller
     {
-        protected int? UsuarioId
-        {
-            get
-            {
-                var usuarioAutenticado = User.FindFirst(ClaimTypes.NameIdentifier);
+	protected readonly AutenticacaoService servicoAuth;
 
-                if (usuarioAutenticado is null)
-                    return null;
+	protected int? EmpresaId
+	{
+		get
+		{
+			var empresaId = servicoAuth.ObterIdEmpresaAsync(User).Result;
 
-                return int.Parse(usuarioAutenticado.Value);
-            }
-        }
+			return empresaId;
+		}
+	}
 
-        protected IActionResult MensagemRegistroNaoEncontrado(int idRegistro)
-        {
-            TempData.SerializarMensagemViewModel(new MensagemViewModel
-            {
-                Titulo = "Erro",
-                Mensagem = $"Não foi possível encontrar o registro ID [{idRegistro}]!"
-            });
+	protected WebControllerBase(AutenticacaoService servicoAuth)
+	{
+		this.servicoAuth = servicoAuth;
+	}
 
-            return RedirectToAction("Index", "Inicio");
-        }
+	protected IActionResult MensagemRegistroNaoEncontrado(int idRegistro)
+	{
+		TempData.SerializarMensagemViewModel(new MensagemViewModel
+		{
+			Titulo = "Erro",
+			Mensagem = $"Não foi possível encontrar o registro ID [{idRegistro}]!"
+		});
 
-        protected void ApresentarMensagemFalha(Result resultado)
-        {
-            ViewBag.Mensagem = new MensagemViewModel
-            {
-                Titulo = "Falha",
-                Mensagem = resultado.Errors[0].Message
-            };
-        }
+		return RedirectToAction("Index", "Inicio");
+	}
 
-        protected void ApresentarMensagemSucesso(string mensagem)
-        {
-            TempData.SerializarMensagemViewModel(new MensagemViewModel
-            {
-                Titulo = "Sucesso",
-                Mensagem = mensagem
-            });
-        }
-    }
+	protected void ApresentarMensagemFalha(Result resultado)
+	{
+		ViewBag.Mensagem = new MensagemViewModel
+		{
+			Titulo = "Falha",
+			Mensagem = resultado.Errors[0].Message
+		};
+	}
+
+	protected void ApresentarMensagemSucesso(string mensagem)
+	{
+		TempData.SerializarMensagemViewModel(new MensagemViewModel
+		{
+			Titulo = "Sucesso",
+			Mensagem = mensagem
+		});
+	}
+}
 
 
